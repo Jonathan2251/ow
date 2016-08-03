@@ -1,0 +1,9 @@
+1. Set broadcom register to let HC treat data in SDRAM as big endian.
+
+    ulVal = BCHP_USB_CTRL_SETUP_BABO_MASK /* Big Endian Byte Order */
+          | BCHP_USB_CTRL_SETUP_FNHW_MASK /* Big Endian 2Bytes Order */
+          | BCHP_USB_CTRL_SETUP_IOC_MASK  /* InvertOverCurrent */
+          ; 
+    BCM_REG_WRITE( BCHP_USB_CTRL_SETUP, ulVal );
+
+2. 
