@@ -1,0 +1,214 @@
+
+template <class T>
+struct BinTree { //trace binary tree by three path: 1.inorder 3.preorder
+	T data;	
+	BinTree<T> *child, *sibling, *parent;
+	BinTree();
+	BinTree(T aData, BinTree<T> *aParent);
+	bool CheckParent(int i, T aData);
+	void Print(int x);
+};
+
+// abstract class, interface for searching step by step.
+template <class T>
+class Iterator
+{
+public:
+	virtual void First() = 0;
+	virtual void Next() = 0;
+	virtual bool IsDone() const = 0;
+	virtual BinTree<T>* Current() const = 0;
+protected:
+	Iterator() { };
+};
+
+template <class T>
+class InorderIterator : public Iterator<BinTree<T>*> {
+private:
+	BinTree<T> *_root, *_curr;
+	stack<BinTree<T>*> _s;
+public:
+	InorderIterator();
+	void First();
+	void Next();
+	bool IsDone() const;
+	BinTree<T>* Current() const;
+};
+
+template <class T>
+class PreorderIterator : public Iterator<BinTree<T>*> {
+private:
+    #define DOWN 0
+    #define UP   1
+    BinTree<T> *_root, *_curr;
+public:
+    int direct;
+	PreorderIterator();
+	void First();
+	void Next();
+	bool IsDone() const;
+	T Current() const;
+	void SetCurrent(BinTree<T>* p);
+};
+
+
+class EFSM { // EFSM_E
+private:
+    BinTree<int> *_root;
+ // create BinTree for the default states
+    BinTree<int>* EFSM::CreateBinTree(int stateId, BinTree<int> *aParent);
+public:
+    EFSM();
+    ~EFSM();
+    void Run();
+};
+
+// BinTree begin ----------------------------------------------
+BinTree::BinTree() {
+	child = 0;
+	sibling = 0;
+};  
+ 
+BinTree::BinTree(T aData, BinTree<T> *aParent) {
+	child = 0;
+	sibling = 0;
+	data = aData;
+	parent = aParent;
+};
+
+// check the ith parent of data is aData.
+bool BinTree::CheckParent(int i, T aData) {
+	BinTree<T> *p = this;
+	while (i > 0 && p) {
+		p = p->parent;
+		i--;
+	}
+	if (i == 0 && p->data == aData) {
+		return true;
+	}
+	else {
+		return false;
+	}
+};
+
+void BinTree::Print(int x) { // just for trace/debug the program
+	int y = x;
+	if (this) {
+		while (x > 0) {
+			cout << " ";
+			x--;
+		}
+		cout << stateName[data] << endl;
+		if (child) {
+			child->Print(y+1);
+		}
+		if (sibling) {
+			sibling->Print(y);
+		}
+	}
+};
+
+// InorderIterator begin ----------------------------------------------
+InorderIterator(BinTree<T>* aTree) : _root(aTree) { };
+
+void InorderIterator::First() {
+	for (_curr = _root ; _curr; _curr = _curr->child) _s.push(_curr);
+	if(!_s.empty()) {
+		_curr = _s.top();
+	}
+	else {
+		_curr = 0;
+	}
+};
+
+void InorderIterator::Next() {
+	if (!_s.empty()) {
+		_s.pop();
+		_curr = _curr->sibling;
+		for ( ; _curr; _curr = _curr->child) _s.push(_curr);
+		if (!_s.empty()) {
+			_curr = _s.top();
+		}
+		else {
+			_curr = 0;
+		}
+	}
+};
+
+bool InorderIterator::IsDone() const {
+	return _s.empty();
+};
+
+BinTree<T>* InorderIterator::Current() const {
+	return _curr;
+};
+
+
+// PreorderIterator begin ----------------------------------------------
+PreorderIterator(BinTree<T>* aTree) : _root(aTree) { };
+
+void PreorderIterator::First() {
+	_curr = _root ;
+	direct = DOWN;
+	return;
+};
+
+void PreorderIterator::Next() {
+	while (_curr) {
+		if (direct == DOWN) {
+			if (_curr->child) {
+				_curr = _curr->child;
+				return;
+			}
+			else if (_curr->sibling) {
+				_curr = _curr->sibling;
+				return;
+			}
+			else {
+				direct = UP;
+			}
+		}
+		else { //direct == UP
+			if (_curr->sibling) {
+				_curr = _curr->sibling;
+				direct = DOWN;
+				return;
+			}
+		}
+		_curr = _curr->parent;
+	}
+	return;
+};
+
+bool PreorderIterator::IsDone() const {
+	return _curr == 0;
+};
+
+BinTree<T>* PreorderIterator::Current() const {
+	return _curr;
+};
+
+void PreorderIterator::SetCurrent(BinTree<T>* p) {
+	_curr = p;
+};
+
+EFSM::EFSM() {
+};
+ 
+EFSM::~EFSM() {
+    if (_root) {
+        delete _root;
+        _root = 0;
+    }
+};
+
+void EFSM::Print() { // print to screen
+	_root->Print(0);
+};
+
+BinTree<int>* EFSM::CreateBinTree(int stateId, BinTree<int> *aParent) { // create BinTree for the default states
+	BinTree<int> *s, *t, *p;
+	s = new BinTree<int>;
+	s->data = stateId;
+	s->parent = aParent;
+	switch(stateId) {

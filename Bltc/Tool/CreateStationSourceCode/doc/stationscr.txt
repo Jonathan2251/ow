@@ -1,0 +1,46 @@
+// dct3xxx board level test station management script file
+// author : Gamma Chen
+
+
+/* --- Test Item List ---
+# 1st number is test item number
+# 2nd string is description
+*/
+
+TESTITEM_DECLARATION
+{
+1       "Front panel LED test"
+2       "Front panel keypad (manual) test (press power to exit)"
+4       "CPU catch memory test"
+5       "BCM3250 SDRAM Long Read/Write test"
+6       "DMA from SDRAM to PCI (3250 memory)"
+7       "DMA from PCI (3250 memory) to SDRAM"
+}
+
+ACTIONITEM_DECLARATION
+{
+201	"Display error code on LED"
+202	"Display error code on LED and return Error Code to SIE"
+}
+
+CONTROLITEM_DECLARATION
+{
+253	"delay_100ms(ms)"
+254	"wait_keyin(key)"
+}
+
+MODEL = "DCH3416P5"
+
+STATION 01
+DESCRIPTION : "With SIE"
+ITEM 01 02 202
+
+STATION 02
+ITEM 5 6 7 201
+
+STATION 03
+
+MODEL = "DCH6416P5"
+
+STATION 01
+ITEM 1 4

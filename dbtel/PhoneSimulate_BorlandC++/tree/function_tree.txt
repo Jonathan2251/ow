@@ -1,0 +1,148 @@
+MAIN MENU
+	TAM
+		Message
+			New
+			New/Old
+			Delete Old
+		OGM
+			Record
+			Play
+			Delete
+		Memo
+			Record
+			Play
+			Delete
+		Setting
+			Record/Answer
+				Ring Count
+					TS
+					4 Ring
+					6 Ring
+				Verbal
+					On
+					Off
+				Volume
+				Remote Pin
+			Answer Only
+				Ring Count
+					TS
+					4 Ring
+					6 Ring
+				Verbal
+					On
+					Off
+				Volume
+				Remote Pin
+			TAM Off
+	Call ID
+	HS Setting
+		Answer Phone
+			Auto Answer
+				On
+				Off
+			Any Key Answer
+				On
+				Off
+		Register HS
+			Base1
+			Base2
+			Base3
+			Base4
+		Select Base
+			Best Base
+			Base 1
+			Base 2
+			Base 3
+			Base 4
+		Idle Display
+			Display Type
+				On
+					Base Name
+					Date & Time
+				Off
+			Change BS Name
+				ABCa
+				Base 2
+				Base 3
+				Base 4
+				Base 5
+		Select Language
+			English
+			Germany
+			France
+			Italiano
+			Espan ol
+		Default Setting
+	BS Setting
+		Change Pin
+		Remove HS
+			HS 1
+			HS 2
+			HS 3
+			HS 4
+			HS 5
+		More Features
+			Dial Mode
+				Tone
+				Pulse
+			Flash Time
+				80ms
+				200ms
+				500ms
+				900ms
+			Pause Time
+				1.0s
+				2.0s
+				3.0s
+				4.0s
+			Auto Prefix
+			Call Barring
+				Base 1
+				Base 2
+				Base 3
+				Base 4
+		HS Priority
+			HS1
+			HS2
+			HS3
+			HS4
+			HS5
+		SOS Setting
+			On
+			Off
+	Sound Setting
+		Ext. Ring
+		Int. Ring
+		Tone
+			Keyclick
+				On
+				Off
+			Charging Tone
+				On
+				Off
+			Confirm Tone
+				On
+				Off
+	Clock Setting
+		Date
+			YYYY/MM/DD
+			MM/DD/YYYY
+			DD/MM/YYYY
+		Time
+			12HR
+			24HR
+	More Features
+		Alarm Setting
+			On
+			Off
+		Appoints. Setting
+			On
+			Off
+		Memo Note
+			On
+			Off
+		Room Monitor
+			On
+			Off
+		Caculator
+	Eng. Support

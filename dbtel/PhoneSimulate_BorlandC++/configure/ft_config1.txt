@@ -1,0 +1,33 @@
+PIN HS1
+HS2 dbtel001
+HS3 dbtel001
+HS4 dbtel001
+HS5 dbtel001
+DialMode 0 // 0:Tone, 1:Pulse
+FlashTime 0 // 0:80ms, 1:200ms, 2:500ms, 3:900ms
+PauseTime 0 // 0:1.0s, 1:2.0s, 2:3.0s, 3:4.0s
+CallBarring 0 // 0:base1, 1:base2, 2:base3, 3:base4
+Prefix HighPriorityHS1
+HighPriorityHS1 false
+HighPriorityHS2 false
+HighPriorityHS3 false
+HighPriorityHS4 false
+HighPriorityHS5 false
+InputRingCount 0
+SOS_ON_OFF 0 // 0:On, 1:Off
+SOS_Number Date::Format
+Date::Format 0
+Date::Year 0
+Date::Month 0
+Date::Day 0
+Time::Format 0
+Time::Hour 0
+Time::Minute 12
+Time::Second 4
+SEND_IP 192.168.3.36
+SEND_PORT 1024
+TEL_NUMBER 0939123457
+[Caller_Id_List] {
+}
+[Phone_Book] {
+}

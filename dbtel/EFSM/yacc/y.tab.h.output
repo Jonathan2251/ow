@@ -1,0 +1,370 @@
+   0  $accept : input $end
+
+   1  input : states
+
+   2  states : state
+   3         | states state
+
+   4  state : STATE ID
+
+   5  $$1 :
+
+   6  state : STATE ID $$1 state_body
+
+   7  state_body : threads
+
+   8  $$2 :
+
+   9  state_body : substates $$2 transitions
+  10             | substates
+
+  11  threads : thread
+  12          | threads thread
+
+  13  thread : THREAD id_list
+
+  14  substates : substate
+  15            | substates substate
+
+  16  substate : SUBSTATE id_list
+
+  17  id_list : ID
+  18          | id_list ',' ID
+
+  19  transitions : transition
+  20              | transitions transition
+
+  21  $$3 :
+
+  22  $$4 :
+
+  23  transition : TRANSITION PRIORITY CONDITION ACTION FROM $$3 nested_state_name $$4 TO nested_state_name
+
+  24  nested_state_name : ID
+  25                    | nested_state_name ':' ID
+
+state 0
+	$accept : . input $end  (0)
+
+	STATE  shift 1
+	.  error
+
+	input  goto 2
+	states  goto 3
+	state  goto 4
+
+
+state 1
+	state : STATE . ID  (4)
+	state : STATE . ID $$1 state_body  (6)
+
+	ID  shift 5
+	.  error
+
+
+state 2
+	$accept : input . $end  (0)
+
+	$end  accept
+
+
+state 3
+	input : states .  (1)
+	states : states . state  (3)
+
+	STATE  shift 1
+	$end  reduce 1
+
+	state  goto 6
+
+
+state 4
+	states : state .  (2)
+
+	.  reduce 2
+
+
+state 5
+	state : STATE ID .  (4)
+	state : STATE ID . $$1 state_body  (6)
+	$$1 : .  (5)
+
+	$end  reduce 4
+	STATE  reduce 4
+	SUBSTATE  reduce 5
+	THREAD  reduce 5
+
+	$$1  goto 7
+
+
+state 6
+	states : states state .  (3)
+
+	.  reduce 3
+
+
+state 7
+	state : STATE ID $$1 . state_body  (6)
+
+	SUBSTATE  shift 8
+	THREAD  shift 9
+	.  error
+
+	state_body  goto 10
+	threads  goto 11
+	substates  goto 12
+	thread  goto 13
+	substate  goto 14
+
+
+state 8
+	substate : SUBSTATE . id_list  (16)
+
+	ID  shift 15
+	.  error
+
+	id_list  goto 16
+
+
+state 9
+	thread : THREAD . id_list  (13)
+
+	ID  shift 15
+	.  error
+
+	id_list  goto 17
+
+
+state 10
+	state : STATE ID $$1 state_body .  (6)
+
+	.  reduce 6
+
+
+state 11
+	state_body : threads .  (7)
+	threads : threads . thread  (12)
+
+	THREAD  shift 9
+	$end  reduce 7
+	STATE  reduce 7
+
+	thread  goto 18
+
+
+state 12
+	state_body : substates . $$2 transitions  (9)
+	state_body : substates .  (10)
+	substates : substates . substate  (15)
+	$$2 : .  (8)
+
+	SUBSTATE  shift 8
+	$end  reduce 10
+	STATE  reduce 10
+	TRANSITION  reduce 8
+
+	$$2  goto 19
+	substate  goto 20
+
+
+state 13
+	threads : thread .  (11)
+
+	.  reduce 11
+
+
+state 14
+	substates : substate .  (14)
+
+	.  reduce 14
+
+
+state 15
+	id_list : ID .  (17)
+
+	.  reduce 17
+
+
+state 16
+	substate : SUBSTATE id_list .  (16)
+	id_list : id_list . ',' ID  (18)
+
+	','  shift 21
+	$end  reduce 16
+	STATE  reduce 16
+	SUBSTATE  reduce 16
+	TRANSITION  reduce 16
+
+
+state 17
+	thread : THREAD id_list .  (13)
+	id_list : id_list . ',' ID  (18)
+
+	','  shift 21
+	$end  reduce 13
+	STATE  reduce 13
+	THREAD  reduce 13
+
+
+state 18
+	threads : threads thread .  (12)
+
+	.  reduce 12
+
+
+state 19
+	state_body : substates $$2 . transitions  (9)
+
+	TRANSITION  shift 22
+	.  error
+
+	transitions  goto 23
+	transition  goto 24
+
+
+state 20
+	substates : substates substate .  (15)
+
+	.  reduce 15
+
+
+state 21
+	id_list : id_list ',' . ID  (18)
+
+	ID  shift 25
+	.  error
+
+
+state 22
+	transition : TRANSITION . PRIORITY CONDITION ACTION FROM $$3 nested_state_name $$4 TO nested_state_name  (23)
+
+	PRIORITY  shift 26
+	.  error
+
+
+state 23
+	state_body : substates $$2 transitions .  (9)
+	transitions : transitions . transition  (20)
+
+	TRANSITION  shift 22
+	$end  reduce 9
+	STATE  reduce 9
+
+	transition  goto 27
+
+
+state 24
+	transitions : transition .  (19)
+
+	.  reduce 19
+
+
+state 25
+	id_list : id_list ',' ID .  (18)
+
+	.  reduce 18
+
+
+state 26
+	transition : TRANSITION PRIORITY . CONDITION ACTION FROM $$3 nested_state_name $$4 TO nested_state_name  (23)
+
+	CONDITION  shift 28
+	.  error
+
+
+state 27
+	transitions : transitions transition .  (20)
+
+	.  reduce 20
+
+
+state 28
+	transition : TRANSITION PRIORITY CONDITION . ACTION FROM $$3 nested_state_name $$4 TO nested_state_name  (23)
+
+	ACTION  shift 29
+	.  error
+
+
+state 29
+	transition : TRANSITION PRIORITY CONDITION ACTION . FROM $$3 nested_state_name $$4 TO nested_state_name  (23)
+
+	FROM  shift 30
+	.  error
+
+
+state 30
+	transition : TRANSITION PRIORITY CONDITION ACTION FROM . $$3 nested_state_name $$4 TO nested_state_name  (23)
+	$$3 : .  (21)
+
+	.  reduce 21
+
+	$$3  goto 31
+
+
+state 31
+	transition : TRANSITION PRIORITY CONDITION ACTION FROM $$3 . nested_state_name $$4 TO nested_state_name  (23)
+
+	ID  shift 32
+	.  error
+
+	nested_state_name  goto 33
+
+
+state 32
+	nested_state_name : ID .  (24)
+
+	.  reduce 24
+
+
+state 33
+	transition : TRANSITION PRIORITY CONDITION ACTION FROM $$3 nested_state_name . $$4 TO nested_state_name  (23)
+	nested_state_name : nested_state_name . ':' ID  (25)
+	$$4 : .  (22)
+
+	':'  shift 34
+	TO  reduce 22
+
+	$$4  goto 35
+
+
+state 34
+	nested_state_name : nested_state_name ':' . ID  (25)
+
+	ID  shift 36
+	.  error
+
+
+state 35
+	transition : TRANSITION PRIORITY CONDITION ACTION FROM $$3 nested_state_name $$4 . TO nested_state_name  (23)
+
+	TO  shift 37
+	.  error
+
+
+state 36
+	nested_state_name : nested_state_name ':' ID .  (25)
+
+	.  reduce 25
+
+
+state 37
+	transition : TRANSITION PRIORITY CONDITION ACTION FROM $$3 nested_state_name $$4 TO . nested_state_name  (23)
+
+	ID  shift 32
+	.  error
+
+	nested_state_name  goto 38
+
+
+state 38
+	transition : TRANSITION PRIORITY CONDITION ACTION FROM $$3 nested_state_name $$4 TO nested_state_name .  (23)
+	nested_state_name : nested_state_name . ':' ID  (25)
+
+	':'  shift 34
+	$end  reduce 23
+	STATE  reduce 23
+	TRANSITION  reduce 23
+
+
+14 terminals, 17 nonterminals
+26 grammar rules, 39 states

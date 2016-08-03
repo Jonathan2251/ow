@@ -1,0 +1,12 @@
+Build
+------
+
+  make
+
+Run
+----
+
+  ./pc permission.def
+
+  Generate output file permission_codegen.h permission_codegen.cpp
+

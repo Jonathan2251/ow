@@ -1,0 +1,1 @@
+project1.exe configure\\pt_config1.txt configure\\ft_config1.txt

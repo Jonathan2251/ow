@@ -1,0 +1,24 @@
+AnswerPhone:AutoAnswer On
+AnswerPhone:AnyKeyAnswer On
+Click On
+ChargingTone On
+ConfirmTone On
+HaveRegistered Base1
+HaveRegistered Base2
+HaveRegistered Base4
+FindBase1 true
+FindBase2 true
+FindBase4 true
+RegisterBase1 Success
+RegisterBase2 Fail
+RegisterBase3 Success
+RegisterBase4 Success
+SelectBase 2
+PriorityCallAlert VIP1
+IdleDisplayName:ProductName DBTEL DECT PHONE
+IdleDisplayName:BaseName BS1
+ExternalRingMelody 4
+ExternalRingVolume 1
+InternalRingMelody 4
+InternalRingVolume 3
+Battery full

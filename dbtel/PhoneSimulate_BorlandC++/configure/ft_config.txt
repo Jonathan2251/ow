@@ -1,0 +1,55 @@
+PIN 0000
+HS1 dbtel001
+HS2 dbtel002
+DialMode 0 // 0:Tone, 1:Pulse
+FlashTime 0 // 0:80ms, 1:200ms, 2:500ms, 3:900ms
+PauseTime 1 // 0:1.0s, 1:2.0s, 2:3.0s, 3:4.0s
+CallBarring 3 // 0:base1, 1:base2, 2:base3, 3:base4
+Prefix 002
+HighPriorityHS1 true
+HighPriorityHS2 true
+HighPriorityHS3 true
+HighPriorityHS4 false
+HighPriorityHS5 true
+InputRingCount 3
+SOS_ON_OFF 0 // 0:On, 1:Off
+SOS_Number 119
+Date::Format 0
+Date::Year 2002
+Date::Month 10
+Date::Day 17
+Time::Format 0
+Time::Hour 21
+Time::Minute 47
+Time::Second 17
+SEND_IP 192.168.3.36
+SEND_PORT 1025
+TEL_NUMBER 0939123456
+[Caller_Id_List] {
+name John
+date 2002/09/30
+time 13:20:10
+tel 0920212202
+old
+name Mary
+date 2002/09/30
+time 13:20:11
+tel 0920212203
+old
+name Tom
+date 2002/09/30
+time 13:20:13
+tel 0920212204
+old
+name Smart
+date 2002/10/01
+time 10:10:13
+tel 0920212205
+old
+}
+[Phone_Book] {
+name John	office_tel 0222221112	mobile_tel 0939111111	fax_tel 0221121001
+name King	office_tel 0222221113	mobile_tel 0939111112	fax_tel 0221121003
+name Nancy	office_tel 0222221114	mobile_tel 0939111113	fax_tel 0221121004
+name Tom	office_tel 0222221115	mobile_tel 0939111114	fax_tel 0221121005
+}

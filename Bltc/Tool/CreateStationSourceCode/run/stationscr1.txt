@@ -1,0 +1,43 @@
+/// DCH_P5 board level test station management script file
+// author : Gamma Chen
+
+#include <..\\Items.txt>
+
+// Follows for MODEL = "DCH3416P5"
+MODEL = "DCH3416P5"
+
+STATION 01
+DESCRIPTION : "With SIE"
+ITEM 204 41 42 24 23 25 26 27 29 32 33 83 121 49 85 202
+
+STATION 02
+DESCRIPTION : "Using Cable Card loaded with Cable Card MTC (CCMTC)"
+ITEM 48 87 59 123 124 74 88 89 31 137 136 201
+
+STATION 03
+DESCRIPTION : "Using Original Cable Card"
+ITEM 50 57 130 131 132 125 71 72 73 43 201
+
+STATION 04
+DESCRIPTION : "Using Original Cable Card"
+ITEM 61 102 wait_keyin(KEY_CH_UP|KEY_CH_DOWN) 141 107 55 201 wait_keyin(KEY_CH_UP|KEY_CH_DOWN) 56 203
+
+
+// Follows for MODEL = "DCH6416P5"
+MODEL = "DCH6416P5"
+
+STATION 01
+DESCRIPTION : "With SIE"
+ITEM 204 41 42 24 23 22 25 30 26 27 29 32 33 83 121 49 85 202
+
+STATION 02
+DESCRIPTION : "Using Cable Card loaded with Cable Card MTC (CCMTC)"
+ITEM 48 58 28 87 59 123 124 74 88 89 92 93 31 137 136 201
+
+STATION 03
+DESCRIPTION : "Using Original Cable Card"
+ITEM 50 57 115 130 131 132 125 71 72 73 43 201
+
+STATION 04
+DESCRIPTION : "Using Original Cable Card"
+ITEM 61 102 wait_keyin(KEY_CH_UP|KEY_CH_DOWN) 141 107 wait_keyin(KEY_CH_UP|KEY_CH_DOWN) 113 55 201 wait_keyin(KEY_CH_UP|KEY_CH_DOWN) 56 203

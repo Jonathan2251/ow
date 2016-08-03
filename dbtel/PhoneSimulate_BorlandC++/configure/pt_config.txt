@@ -1,0 +1,48 @@
+AnswerPhone:AutoAnswer On
+AnswerPhone:AnyKeyAnswer On
+Click Off
+ChargingTone On
+ConfirmTone Off
+HaveRegistered Base1
+HaveRegistered Base2
+HaveRegistered Base4
+FindBase1 true
+FindBase2 true
+FindBase3 true
+FindBase4 true
+RegisterBase1 Success
+RegisterBase2 Fail
+RegisterBase3 Success
+RegisterBase4 Success
+SelectBase 1
+PriorityCallAlert VIP1
+IdleDisplayOn 1
+IdleDisplay 0 // 0:Base Name, 1:Date & Time
+IdleDisplay:ProductName DBTEL DECT PHONE
+IdleDisplay:BaseName BS1
+SelectLanguage 0
+ExternalRingMelody 6
+ExternalRingVolume 2
+InternalRingMelody 2
+InternalRingVolume 1
+AlarmOnOff 0
+AlarmTime::Hour 7
+AlarmTime::Minute 0
+AlarmTime::Second 1090527227
+AppointOnOff 0 // 0:On, 1:Off
+MemoNoteOnOff 0 // 0:On, 1:Off
+RoomMonitorOnOff 0 // 0:On, 1:Off
+Battery full
+[Phone_Book] {
+name John	office_tel 0222221112	mobile_tel 0939000001	fax_tel 0221121001
+name Mary	office_tel 0222221113	mobile_tel 0939000002	fax_tel 0221121003
+name Smart	office_tel 0222221114	mobile_tel 0939000003	fax_tel 0221121004
+name Tom	office_tel 0222221115	mobile_tel 0939000004	fax_tel 0221121005
+}
+[Ring_Vip] {
+Melody 3	Volume 1
+Melody 3	Volume 1
+Melody 3	Volume 1
+Melody 3	Volume 1
+Melody 3	Volume 1
+}

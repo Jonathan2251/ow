@@ -1,0 +1,37 @@
+1.基本功能;2.擴展功能:1
+Please input the file of maze:ex2inp1.txt
+Please input the starting position:
+Please input the row position:1
+Please input the column position:1
+<1>輸出起點到終點所有走過的路徑(包含錯誤後走回頭的路徑)。
+第1條路徑:
+(1,1)(1,2)(1,3)(1,4)(1,5)(1,4)(2,4)(3,4)(3,5)(3,6)(3,7)(2,7)
+(1,7)(1,8)(1,9)(1,10)(1,11)(2,11)(2,12)(2,11)(1,11)(1,10)(1,9)(1,8)
+(1,7)(2,7)(3,7)(4,7)(4,8)(4,9)(4,10)(4,11)(4,12)(4,13)(3,13)(4,13)
+(5,13)(5,14)(5,15)(5,14)(6,14)(5,14)(5,13)(5,12)
+<2>輸出原始迷宮內容，其中障礙部份以X顯示，可走部份以O顯示。
+OOOOOXOOOOOXXXX
+XOOOXXOXXXOOXXX
+OOXOOOOXXXXXOXX
+XXOOXXOOOOOOOXX
+XXOXOOXOXOXXOOO
+OOOXOXXOOXOOXOX
+OXXXOOOOXXXXXXX
+OOOXOXXOXXXXXOX
+XXOOOXXOXOOOOOO
+OOOXXXXOOOXXXXO
+OXOOXXXXXOXXXXO
+<3>將迷宮中從起點到終點所有走過的錯誤路徑顯示為*，其中正確路徑
+  （不含錯誤後走回頭的路徑）顯示為@，輸出迷宮搜尋過的狀態。
+@@@@*X*****XXXX
+XOO@XX*XXX**XXX
+OOX@@@@XXXXX*XX
+XXOOXX@@@@@@@XX
+XXOXOOXOXOX@@**
+OOOXOXXOOXOOX*X
+OXXXOOOOXXXXXXX
+OOOXOXXOXXXXXOX
+XXOOOXXOXOOOOOO
+OOOXXXXOOOXXXXO
+OXOOXXXXXOXXXXO
+Do you want to try again? (y/n)n

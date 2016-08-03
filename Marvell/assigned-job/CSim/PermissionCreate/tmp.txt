@@ -1,0 +1,13 @@
+// Permission definition for System registers.
+
+/* CPTR register */
+define_reg(CPTR, EL2, 3)
+define_trap("(EL2 == level || EL1 == level)&& 1 == QueryRegField(CPTR, EL3, nsFIELD::TCPAC) && !IsSecureAccess()", EL3)
+define_end
+
+/* CPTT register */
+define_reg(CPTT, EL2, 3)
+define_trap("(EL2 == level) && 1 == QueryRegField(CPTR, EL3, nsFIELD::TCPAC) && IsSecureAccess() && 1 == QueryRegField(CPTR, EL2, nsFIELD::TCPAC)", EL2)
+define_trap("(EL1 == level) && 1 == QueryRegField(CPTR, EL3, nsFIELD::TCPAC) && !IsSecureAccess()", EL3)
+define_end
+

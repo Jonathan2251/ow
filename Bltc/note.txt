@@ -1,0 +1,7 @@
+// note :
+
+1. Choose UncompressedDebugQIPH in MotorolaTvMonQiph.mcp. Otherwise, you cannot download code to SDRAM.
+
+2. Since in bcm7400, I cannot find the disable RS232 transmit register like bcm7038, I Rewrite 2 RS232 output functions to disable print message during boot, but still will print a 'B' character on RS232. It's OK to communication with SIE (without leading character @ is fine). Print 'B' is came from UserBspCppInit() of BspUser.c.
+
+3. Now, you can run station test by press keypad "UP", "LEFT", ..., during boot. Or Keypad select item on keypad by don't press keypad during boot.

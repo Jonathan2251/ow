@@ -1,0 +1,996 @@
+//---------------------------------------------------------------------------
+
+#include <vcl.h>
+#pragma hdrstop
+
+#include "Page.h"  
+#include "Main.h"
+#include <math.h>
+//---------------------------------------------------------------------------
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+TGPage *GPage;
+//---------------------------------------------------------------------------
+ 
+extern TMainForm *MainForm;
+extern TMDIChild *currDoc;
+
+GPoint Rotate(GPoint p, double radian) {
+    GPoint p1;
+    double r = sqrt((p.x)*(p.x) + (p.y)*(p.y));
+    double a = p.Radian();
+    p1.x = r*cos(a - radian);
+    p1.y = r*sin(a - radian);
+    return p1;
+};
+
+GPoint Shift(GPoint p, GPoint s) {
+    GPoint p1;
+    p1 = (p - s);
+    return p1;
+};
+
+GPoint::GPoint() {
+};
+
+GPoint::GPoint(int xx, int yy) {
+    x = xx;
+    y = yy;
+};
+
+GPoint GPoint::operator=(GPoint p) {
+    x = p.x;
+    y = p.y;
+    return *this;
+};
+
+GPoint GPoint::operator-(GPoint p) {
+    GPoint temp;
+    temp.x = x - p.x;
+    temp.y = y - p.y;
+    return temp;
+};
+
+GPoint GPoint::operator+(GPoint p) {
+    GPoint temp;
+    temp.x = x + p.x;
+    temp.y = y + p.y;
+    return temp;
+};
+
+GPoint GPoint::operator/(int i) {
+    GPoint temp;
+    temp.x = x/2;
+    temp.y = y/2;
+    return temp;
+};
+         
+bool GPoint::operator==(GPoint p) {
+    return x == p.x && y == p.y;
+};
+
+double GPoint::Radian() {
+    double a;
+    if (x == 0) {
+        if (y == 0) {
+            a = 0;
+        }
+        else if (y > 0) {
+            a = 1.5708;
+        }
+        else { // y < 0
+            a = -1.5708;
+        }
+    }
+    else if (y == 0) {
+        if (x > 0) {
+            a = 0;
+        }
+        else { // x < 0
+            a = - 3.1416;
+        }
+    }
+    else {
+        a = atan(double(y)/double(x));
+        if (x < 0) {
+            if (a > 0) {
+                a = a - 3.1416;
+            }
+            else {
+                a = 3.1416 + a;
+            }
+        }
+    }
+    return a;
+};
+       
+double GPoint::Distance(GPoint p) {
+    GPoint q;
+    q = p - *this;
+    if (q == GPoint(0, 0)) {
+        return 0;
+    }
+    else {
+        return sqrt(double(q.x * q.x + q.y * q.y));
+    }
+};
+     
+GLine::GLine() {
+};
+
+GLine::GLine(GPoint aFrom, GPoint aTo) {
+    from = aFrom;
+    to = aTo;
+};
+
+void GLine::operator=(GLine aLine) {
+    from = aLine.from;
+    to = aLine.to;
+};
+
+double GLine::Radian() {
+    GPoint p;
+    p = from - to;
+    return p.Radian();
+};
+
+double GLine::Distance(GPoint p) {
+    GPoint vP, vFrom, vTo;
+    double a = Radian();
+    vP = Rotate(p, a);
+    vFrom = Rotate(from, a);
+    vTo = Rotate(to, a);
+    if (vP.x > vFrom.x && vP.x < vTo.x || vP.x > vTo.x && vP.x < vFrom.x) {
+        vP = Shift(vP, vFrom);
+        if (vP.y < 0) {
+            return -vP.y;
+        }
+        else {
+            return vP.y;
+        }
+    }
+    else {
+        if (vP.Distance(vFrom) < vP.Distance(vTo)) {
+            return vP.Distance(vFrom);
+        }
+        else {
+            return vP.Distance(vTo);
+        }
+    }
+};
+             
+GRect::GRect() {
+};
+
+GRect::GRect(int aLeft, int aTop, int aRight, int aBottom) {
+    left = aLeft;
+    top = aTop;
+    right = aRight;
+    bottom = aBottom;
+};
+                 
+GRect GRect::operator=(TRect rect) {
+    left = rect.left;
+    top = rect.top;
+    right = rect.right;
+    bottom = rect.bottom;
+    return *this;
+};
+
+GPoint GRect::GetFarthestPoint(GPoint p) {
+    GPoint q(GPoint(left, top));
+    double distance = p.Distance(q);
+
+    double d = p.Distance(GPoint(right, top));
+    if (d > distance) {
+        q = GPoint(right, top);
+        distance = d;
+    }
+
+    d = p.Distance(GPoint(right, bottom));
+    if (d > distance) {
+        q = GPoint(right, bottom);
+        distance = d;
+    }
+
+    d = p.Distance(GPoint(left, bottom));
+    if (d > distance) {
+        q = GPoint(left, bottom);
+        distance = d;
+    }
+    return q;
+};
+
+bool GRect::PointIn(GPoint p) {
+    if (left <= p.x && p.x <= right && top <= p.y && p.y <= bottom) {
+        return true;
+    }
+    else {
+        return false;
+    }
+};
+
+GPoint GRect::ConnectPoint(GPoint p) {
+    GPoint m, q;
+    m.x = (left + right) / 2;
+    m.y = (top + bottom) / 2;
+    GPoint leftTop = GPoint(left, top) - m;
+    GPoint rightTop = GPoint(right, top) - m;
+    GPoint rightBottom = GPoint(right, bottom) - m;
+    GPoint leftBottom = GPoint(left, bottom) - m;
+    double a = (p - m).Radian();
+    double b;
+    if (a >= rightTop.Radian() && a < rightBottom.Radian()) {
+        b = double(p.y - m.y) / double(p.x - m.x);
+        q.x = right;
+        q.y = m.y + b * (right - m.x);
+    }
+    else if (rightBottom.Radian() <= a && a < leftBottom.Radian()) {
+        b = double(p.x - m.x) / double(p.y - m.y);
+        q.x = m.x + b * (bottom - m.y);
+        q.y = bottom;
+    }
+    else if (a >= leftBottom.Radian() || a < leftTop.Radian()) {
+        b = double(p.y - m.y) / double(p.x - m.x);
+        q.x = left;
+        q.y = m.y + b * (left - m.x);
+    }
+    else if (leftTop.Radian() <= a && a < rightTop.Radian()) {
+        b = double(p.x - m.x) / double(p.y - m.y);
+        q.x = m.x + b * (top - m.y);
+        q.y = top;
+    }
+
+    return q;
+};
+
+double GRect::Distance(int x, int y) {
+    double distance, d;
+    GPoint p(x, y), q;
+    q = ConnectPoint(p);
+    return q.Distance(p);
+};
+
+State* Transition::FromState() {
+    return _fromState;
+};
+
+State* Transition::ToState() {
+    return _toState;
+};
+
+void Transition::SetFromState(State *from) {
+    _fromState = from;
+};
+
+void Transition::SetToState(State *to) {
+    _toState = to;
+};
+
+void GControl::ActiveMove(GPoint p) {
+};
+  
+void GControl::Move(GPoint p) {
+};
+
+void GControl::ConfirmMove(GPoint p) {
+};
+
+int GControl::Type() {
+    return _type;
+};
+
+bool GControl::IsSelected() {
+    return _selected;
+};
+
+void GControl::Select() {
+    _selected = true;
+};
+
+void GControl::Unselect() {
+    _selected = false;
+};
+
+void GControl::Motion() {
+	return NOTHING:
+};
+
+GTextBox::GTextBox() {
+    _type = TGPage::GTEXTBOX;
+};
+
+GTextBox::GTextBox(TRect *rect) {
+    _rect = *rect;
+    _type = TGPage::GTEXTBOX;
+};
+
+void GTextBox::Initial(TRect *rect, bool active) {
+    _rect = *rect;
+    _active = active;
+    _type = TGPage::GTEXTBOX;
+};
+                  
+GRect GTextBox::Rect() {
+    return _rect;
+};
+
+void GTextBox::SetRect(GRect *rect) {
+    _rect = *rect;
+};
+
+void GTextBox::Motion(GPoint pt) {
+    int i = currDoc->ppc->ActivePageIndex;
+
+    if (x >= _rect.left - 3 && x <= _rect.left + 3 && y >= _rect.top - 3  && y <= _rect.top + 3) {
+        return CHANGE_SIZE;
+    }
+    else if (x >= _rect.right - 3 && x <= _rect.right + 3 && y >= _rect.top - 3  && y <= _rect.top + 3) {
+        return CHANGE_SIZE;
+    }
+    else if (x >= _rect.right - 3 && x <= _rect.right + 3 && y >= _rect.bottom - 3  && y <= _rect.bottom + 3) {
+        return CHANGE_SIZE;
+    }
+    else if (x >= _rect.left - 3 && x <= _rect.left + 3 && y >= _rect.bottom - 3  && y <= _rect.bottom + 3) {
+        return CHANGE_SIZE;
+    }
+    else if (_rect.PointIn(GPoint(x, y))) {
+        return MOVE;
+    }
+    else {
+        return NOTHING;
+    }
+};
+
+void GTextBox::ActiveAdjustSize(GPoint p) {
+    int i = currDoc->ActivePageIndex();
+	_pivot = _rect.GetFarthestPoint(p);
+    currDoc->page[i]->movePt = p;
+};
+
+void GTextBox::AdjustSize(int x, int y) {
+    int i = currDoc->ppc->ActivePageIndex;
+    if (x > currDoc->page[i]->Width) {
+        x = currDoc->page[i]->Width;
+    }
+    if (y > currDoc->page[i]->Height) {
+        y = currDoc->page[i]->Height;
+    }
+    currDoc->page[i]->Canvas->Brush->Color = clWhite;
+    if (_active) {
+        currDoc->page[i]->Canvas->Pen->Color = clBlack;
+        currDoc->page[i]->Canvas->Pen->Style = psDashDot;
+        currDoc->page[i]->Canvas->Pen->Mode = pmNotXor;
+        currDoc->page[i]->Canvas->Rectangle(_pivot.x, _pivot.y, currDoc->page[i]->movePt.x, currDoc->page[i]->movePt.y); // clear the last draw
+        currDoc->page[i]->movePt = GPoint(x, y);
+        currDoc->page[i]->Canvas->Pen->Mode = pmNotXor;
+        currDoc->page[i]->Canvas->Rectangle(_pivot.x, _pivot.y, currDoc->page[i]->movePt.x, currDoc->page[i]->movePt.y); // draw
+    }
+    else {
+        if (x > currDoc->page[i]->Width) {
+            x = currDoc->page[i]->Width;
+        }
+        if (y > currDoc->page[i]->Height) {
+            y = currDoc->page[i]->Height;
+        }
+        int x3 = (_rect.right - _rect.left)/6;
+        int y3 = (_rect.bottom - _rect.top)/6;
+        currDoc->page[i]->Canvas->Pen->Color = clBlack;
+        currDoc->page[i]->Canvas->Pen->Style = psSolid;
+        currDoc->page[i]->Canvas->Pen->Mode = pmNotXor;
+        currDoc->page[i]->Canvas->RoundRect(currDoc->page[i]->origin.x, currDoc->page[i]->origin.y, currDoc->page[i]->movePt.x, currDoc->page[i]->movePt.y, x3, y3); // clear the last draw
+        currDoc->page[i]->movePt = GPoint(x, y);
+        currDoc->page[i]->Canvas->Pen->Mode = pmNotXor;
+        currDoc->page[i]->Canvas->RoundRect(currDoc->page[i]->origin.x, currDoc->page[i]->origin.y, currDoc->page[i]->movePt.x, currDoc->page[i]->movePt.y, x3, y3); // draw
+    }
+};
+         
+void GTextBox::ChangeSize(int x, int y) {
+    int temp;
+    if (x < _pivot.x) {
+        temp = _pivot.x;
+        _pivot.x = x;
+        x = temp;
+    }
+    if (y < _pivot.y) {
+        temp = _pivot.y;
+        _pivot.y = y;
+        y = temp;
+    }
+    SetRect(&GRect(_pivot.x, _pivot.y, x, y));
+};
+
+void GTextBox::ActiveMove(GPoint p) {
+    int i = currDoc->ActivePageIndex();
+    currDoc->page[i]->movePt = p;
+    _move = _rect;
+};
+
+void GTextBox::Move(GPoint p) {
+    int i = currDoc->ActivePageIndex();
+    currDoc->page[i]->Canvas->Brush->Color = clWhite;
+    currDoc->page[i]->Canvas->Pen->Color = clBlack;
+    currDoc->page[i]->Canvas->Pen->Style = psDashDot;
+    currDoc->page[i]->Canvas->Pen->Mode = pmNotXor;
+    currDoc->page[i]->Canvas->Rectangle(_move.Left, _move.Top, _move.Right, _move.Bottom); // clear the last draw
+    GPoint shift = p - currDoc->page[i]->movePt;
+    _move.Left += shift.x;
+    _move.Right += shift.x;
+    _move.Top += shift.y;
+    _move.Bottom += shift.y;
+    currDoc->page[i]->movePt = p;
+    currDoc->page[i]->Canvas->Pen->Mode = pmNotXor;
+    currDoc->page[i]->Canvas->Rectangle(_move.Left, _move.Top, _move.Right, _move.Bottom);  // draw
+};
+        
+void GTextBox::ConfirmMove(GPoint p) {
+    _rect = _move;
+};
+
+void GTextBox::Draw() {
+    int i = currDoc->ppc->ActivePageIndex;  
+    currDoc->page[i]->Canvas->Brush->Color = clWhite;
+    currDoc->page[i]->Canvas->Pen->Color = clBlack;
+    currDoc->page[i]->Canvas->Pen->Style = psSolid;
+    currDoc->page[i]->Canvas->Pen->Mode = pmCopy;
+    int x3 = (_rect.right - _rect.left)/6;
+    int y3 = (_rect.bottom - _rect.top)/6;
+    currDoc->page[i]->Canvas->RoundRect(_rect.left, _rect.top, _rect.right, _rect.bottom, x3, y3);
+    if (_selected) {
+	    currDoc->page[i]->Canvas->Pen->Color = clRed;
+    	currDoc->page[i]->Canvas->Pen->Style = psDashDot;
+	    currDoc->page[i]->Canvas->Pen->Mode = pmNotXor;
+    	currDoc->page[i]->Canvas->Rectangle(_rect.left, _rect.top, _rect.right, _rect.bottom);
+		currDoc->page[i]->Canvas->Pen->Color = clBlack;
+	    currDoc->page[i]->Canvas->Pen->Style = psSolid;
+    	currDoc->page[i]->Canvas->Pen->Mode = pmCopy;
+	    currDoc->page[i]->Canvas->Rectangle(_rect.left-3, _rect.top-3, _rect.left+3, _rect.top+3);
+    	currDoc->page[i]->Canvas->Rectangle(_rect.right-3, _rect.top-3, _rect.right+3, _rect.top+3);
+	    currDoc->page[i]->Canvas->Rectangle(_rect.right-3, _rect.bottom-3, _rect.right+3, _rect.bottom+3);
+    	currDoc->page[i]->Canvas->Rectangle(_rect.left-3, _rect.bottom-3, _rect.left+3, _rect.bottom+3);
+    }
+};
+
+void GTextBox::Motion(GPoint p) {
+};
+          
+int GArrow::GetShortestPoint(GPoint p) {
+    double distance = UNLIMIT;
+    int select;
+    for (int i = 0; i < _size; i++) {
+        if (_points[i].Distance(p) < distance) {
+            distance = _points[i].Distance(p);
+            select = i;
+        }
+    }
+    return select;
+};
+
+void GArrow::SetFrom(GTextBox *from) {
+    _from = from;
+};
+
+void GArrow::SetTo(GTextBox *to) {
+    _to = to;
+};
+
+void GArrow::Initial(GTextBox *from, GTextBox *to, bool selected) {
+    _from = from;
+    _to = to;
+    _selected = selected;
+    _type = TGPage::GARROW;
+};
+
+int GArrow::Motion(GPoint pt) {
+    int j = currDoc->ActivePageIndex();
+    for (int i = 0; i < _size; i++) {
+        if (pt.x >= _points[i].x - 3 && pt.x <= _points[i].x + 3 && pt.y >= _points[i].y - 3  && pt.y <= _points[i].y + 3) {
+            return CHANGE_SIZE;
+        }
+        else if (Distance(pt) < 2) {
+            return CHANGE_SIZE;
+        }
+    }
+};
+
+void GArrow::ActiveAdjustSize(GPoint pt) {
+    int i = currDoc->ActivePageIndex();
+	for (int i = 0; i < _size; i++) {
+		if (pt.x >= _points[i].x - 3 && pt.x <= _points[i].x + 3 && pt.y >= _points[i].y - 3  && pt.y <= _points[i].y + 3) {
+			// adjust _points[_select]
+			_select = i;
+			currDoc->page[i]->movePt = _points[_select];
+			return;
+		}
+	}
+	if (_size >= MAX_SIZE) {
+		return;
+	}
+	for (int i = 0; i < _size - 1; i++) {
+		if (GLine(_points[i], _points[i+1]).Distance(p) < 2) {
+			// add a point between _points[i] and _points[i+1], and adjust the point
+			for (int j = _size-1; j > i; j--) {
+				_points[j+1] = _points[j];
+			}
+			_size++;
+			_select = i+1;
+			_points[_select] = pt;  
+			currDoc->page[i]->movePt = _points[_select];
+			return;
+		}
+	}
+
+	// this case suppose not to occurs but if it occurs (may be the computer error),
+	// then adjust the last point in arrow
+	_select = _size - 1;
+	currDoc->page[i]->movePt = _points[_select];
+};
+
+void GArrow::AdjustSize(GPoint pt) {
+    int i = currDoc->ActivePageIndex();
+    if (pt.x > currDoc->page[i]->Width || pt.y > currDoc->page[i]->Height) {
+		// do nothing if out of canvas
+        return;
+    }  
+    GPoint tmp(_points[_select].x, _points[_select].y);
+    if (_active) {
+        currDoc->page[i]->Canvas->Pen->Color = clBlack;
+        currDoc->page[i]->Canvas->Pen->Style = psDashDot;
+        currDoc->page[i]->Canvas->Pen->Mode = pmNotXor;
+        _points[_select] = currDoc->page[i]->movePt;
+        currDoc->page[i]->Canvas->Polyline(_points, _size - 1);
+        currDoc->page[i]->movePt = GPoint(x, y);
+        currDoc->page[i]->Canvas->Pen->Mode = pmNotXor;
+        _points[_select] = currDoc->page[i]->movePt;
+        currDoc->page[i]->Canvas->Polyline(_points, _size - 1);
+        _points[_select] = tmp;
+    }
+    else {
+        currDoc->page[i]->Canvas->Brush->Color = clWhite;
+        currDoc->page[i]->Canvas->Pen->Color = clBlack;
+        currDoc->page[i]->Canvas->Pen->Style = psSolid;
+        currDoc->page[i]->Canvas->Pen->Mode = pmNotXor; 
+        _points[_select] = currDoc->page[i]->movePt;
+        currDoc->page[i]->Canvas->Polyline(_points, _size - 1);
+        currDoc->page[i]->movePt = GPoint(x, y);
+        currDoc->page[i]->Canvas->Pen->Mode = pmNotXor;
+        _points[_select] = currDoc->page[i]->movePt;
+        currDoc->page[i]->Canvas->Polyline(_points, _size - 1);
+    }
+};
+
+void GArrow::ChangeSize(GPoint pt) {
+    GTextBox *tb;
+    int i = currDoc->ActivePageIndex();
+    if (_select == 0) {
+        if (_from->Rect().PointIn(_points[0])) {
+            tb = currDoc->page[i]->GetShortestInRangeTextBox(pt.x, pt.y);
+            if (tb != 0) {
+                SetFrom(tb);
+                ResetConnectPointFrom();
+            }
+        }
+    }
+    else if (_select == _size - 1) {
+        if (_to->Rect().PointIn(_points[_size - 1])) {
+            tb = currDoc->page[i]->GetShortestInRangeTextBox(pt.x, pt.y);
+            if (tb != 0) {
+                SetTo(tb);
+                ResetConnectPointTo();
+            }
+        }
+    }
+    else {
+        GLine line(_points[_select-1], _points[_select+1]);
+        if (line.Distance(pt) > 1) {
+            _points[_select] = pt;
+            if (_select == 1) {
+                _points[0] = _from->Rect().ConnectPoint(_points[1]);
+            }
+            if (_select == _size - 2) {
+                _points[_size - 1] = _to->Rect().ConnectPoint(_points[_size - 2]);
+            }
+        }
+        else {
+            for (int i = _select; i < _size - 1; i++) {
+                _points[i] = _points[i+1];
+            }
+            _size--;
+        }
+    }
+};
+
+void GArrow::ActiveMove(GPoint p) {
+    int i = currDoc->ActivePageIndex();
+    currDoc->page[i]->movePt = p;
+	_newPSize = _size;
+	for (i = 0; i < _size; i++) {
+	    _newP[i] = _points[i];
+	}
+};
+
+void GArrow::Move(GPoint pt) {
+    int i = currDoc->ppc->ActivePageIndex;
+    currDoc->page[i]->Canvas->Brush->Color = clWhite;
+    currDoc->page[i]->Canvas->Pen->Color = clBlack;
+    currDoc->page[i]->Canvas->Pen->Style = psDashDot;
+    currDoc->page[i]->Canvas->Pen->Mode = pmNotXor;
+    currDoc->page[i]->Canvas->Polyline(_points, _size - 1); // clear the last draw
+
+    GPoint shift = pt - currDoc->page[i]->movePt;
+    for (i = 0; i < _newPSize; i++) {
+        _newP[i] = _newP[i] + shift;
+    }
+
+    i = currDoc->ppc->ActivePageIndex;
+    currDoc->page[i]->movePt = pt;
+    currDoc->page[i]->Canvas->Pen->Mode = pmNotXor;
+    currDoc->page[i]->Canvas->Polyline(_points, _size - 1); // draw
+};
+        
+void GArrow::ConfirmMove(GPoint pt) {
+    for (int i = 0; i < _newPSize; i++) {
+        _points[i] = _newP[i];
+    }
+};
+
+void GArrow::Draw() {
+    GPoint triangle[3];
+    triangle[0] = _points[_size - 1];
+    GPoint p;
+    p = _points[_size - 1] - _points[_size - 2];
+    double a = p.Radian();
+    triangle[1].x = _points[_size - 1].x - 10 * cos(a + 0.4);
+    triangle[1].y = _points[_size - 1].y - 10 * sin(a + 0.4);
+    triangle[2].x = _points[_size - 1].x - 10 * cos(a - 0.4);
+    triangle[2].y = _points[_size - 1].y - 10 * sin(a - 0.4);
+
+    int i = currDoc->ppc->ActivePageIndex;
+    currDoc->page[i]->Canvas->Brush->Color = clBlack;
+    currDoc->page[i]->Canvas->Pen->Color = clBlack;
+    currDoc->page[i]->Canvas->Pen->Style = psSolid;
+    currDoc->page[i]->Canvas->Pen->Mode = pmCopy;
+    currDoc->page[i]->Canvas->Polyline(_points, _size - 1);
+    currDoc->page[i]->Canvas->Polygon(triangle, 2);
+
+    if (_active) {
+    	currDoc->page[i]->Canvas->Brush->Color = clWhite;
+	    for (int j = 0; j < _size; j++) {
+    	    currDoc->page[i]->Canvas->Rectangle(_points[j].x-3, _points[j].y-3, _points[j].x+3, _points[j].y+3);
+	    }
+    	currDoc->page[i]->Canvas->Pen->Color = clRed;
+	    currDoc->page[i]->Canvas->Pen->Style = psDashDot;
+    	currDoc->page[i]->Canvas->Pen->Mode = pmNotXor;
+	    currDoc->page[i]->Canvas->Polyline(_points, _size - 1);
+    }
+};
+
+double GArrow::Distance(GPoint pt) {
+    double distance = UNLIMIT, d;
+    for (int i = 0; i < _size - 1; i++) {
+        d = GLine(_points[i], _points[i+1]).Distance(pt);
+        if (d < distance) {
+            distance = d;
+        }
+    }
+    return distance;
+};
+
+GTextBox *GArrow::From() {
+    return _from;
+};
+ 
+GTextBox *GArrow::To() {
+    return _to;
+};
+
+void GArrow::ResetConnectPointFrom() {
+    _points[0] = _from->Rect().ConnectPoint(_points[1]);
+};
+ 
+void GArrow::ResetConnectPointTo() {
+    _points[_size - 1] = _to->Rect().ConnectPoint(_points[_size - 2]);
+};
+
+void TGPage::ResetArrowsConnectPoint(GTextBox *tb) {
+    for (int i = 0; i < _arrow.size(); i++) {
+        if (_arrow[i].From() == tb) {
+            _arrow[i].ResetConnectPointFrom();
+        }
+		if (_arrow[i].To() == tb) {
+            _arrow[i].ResetConnectPointTo();
+        }
+    }
+};
+
+void TGPage::AdjustSelectedControlSize(GPoint pt) {
+	unsigned int i;
+	for (i = 0; i < _selected.size(); i++) {
+	    _selected[i]->ChangeSize(pt);
+	}
+	for (i = 0; i < _selected.size(); i++) {
+    	if (_selected[i]->Type() == GTEXTBOX) {
+    		ResetArrowsConnectPoint((GTextBox*)_selected[i]);
+	    }
+	}
+};
+
+void TGPage::MoveSelectedControl(GPoint pt) {
+	unsigned int i;
+
+	for (i = 0; i < _selected.size(); i++) {
+		_selected[i]->ConfirmMove(pt);
+	}
+	for (i = 0; i < _selected.size(); i++) {
+		if (_selected[i]->Type() == GTEXTBOX) {
+			ResetArrowsConnectPoint((GTextBox*)_selected[i]);
+		}
+	}
+};
+
+GTextBox* TGPage::GetShortestTextBox(GPoint pt) {
+    GTextBox *shortest = 0;
+    double distance = UNLIMIT, d;
+    for (int i = 0; i < _tb.size(); i++) {
+        d = _tb[i].Rect().Distance(pt);
+        if (d < distance) {
+            distance = d;
+            shortest = &_tb[i];
+        }
+    }
+    return shortest;
+};
+
+GTextBox* TGPage::GetShortestInRangeTextBox(GPoint pt) {
+    GTextBox *shortest = 0;
+    double distance = UNLIMIT, d;
+    for (int i = 0; i < _tb.size(); i++) {
+        if (_tb[i].Rect().PointIn(pt)) {
+            d = _tb[i].Rect().Distance(pt);
+            if (d < distance) {
+                distance = d;
+                shortest = &_tb[i];
+            }
+        }
+    }
+    return shortest;
+};
+
+GArrow* TGPage::GetShortestArrow(GPoint pt) {
+    GArrow *shortest = 0;
+    int distance = UNLIMIT, d;
+    for (unsigned int i = 0; i < _arrow.size(); i++) {
+        d = _arrow[i].Distance(pt);
+        if (d < distance) {
+            distance = d;
+            shortest = &_arrow[i];
+        }
+    }
+    return shortest;
+};
+
+__fastcall TGPage::TGPage(TComponent *Owner)
+ : TForm(Owner)
+{
+    Visible = true;
+    Color = clWhite;
+    BorderStyle = bsNone;
+    Left = 200;
+    Top = 0;
+    Width = 200;
+    Height = 700;
+    Canvas->Pen->Mode = pmNotXor;
+//  Canvas->CopyMode = cmMergePaint;
+
+    PopupMenu = new TPopupMenu(this);
+    TMenuItem *NewItem = new TMenuItem(PopupMenu);
+    NewItem->Caption = "Format";
+    PopupMenu->Items->Add(NewItem);
+    NewItem = new TMenuItem(PopupMenu);
+    NewItem->Caption = "Add Point";
+    PopupMenu->Items->Add(NewItem);
+};
+
+void TGPage::AddTransition(GPoint from, GPoint to) {
+    double d;
+    GArrow tmp;
+    unsigned int i;
+
+    GTextBox *fromTB = GetShortestInRangeTextBox(from.x, from.y);
+    GTextBox *toTB = GetShortestInRangeTextBox(to.x, to.y);
+    if (from.Distance(to) > 10 && fromTB && toTB) {
+        tmp.Initial(fromTB, toTB, true);
+        _arrow.push_back(tmp);
+        for (i = 0; i < _selected.size(); i++) {
+            _selected[i]->Inactive();
+        }
+        _selected.clear();
+        _selected.push_back((GControl*)&(*_arrow.rbegin()));
+    }
+    else {
+        throw OverBound();
+    }
+};
+
+// Decide which control to be select by (x, y) which mouse down, and then put control pointer to _selected.
+void TGPage::SelectControl(GPoint pt) {
+    GTextBox *tb;
+    GArrow *arrow;
+    int d1, d2;
+    unsigned int i;
+
+    tb = GetShortestTextBox(pt);
+    if (tb != 0) {
+        d1 = tb->Rect().Distance(pt);
+    }
+    else {
+        d1 = UNLIMIT;
+    }
+    arrow = GetShortestArrow(pt);
+    if (arrow != 0) {
+        d2 = arrow->Distance(pt);
+    }
+    else {
+        d2 = UNLIMIT;
+    }
+    if (tb != 0 || arrow != 0) {
+        if (_selected.size() > 0) {
+            for (i = 0; i < _selected.size(); i++) {
+                _selected[i]->Inactive();
+            }
+            _selected.clear();
+        }
+        if (d1 < d2) {
+            _selected.push_back(tb);
+        }
+        else {
+            _selected.push_back(arrow);
+/*    // gamma trace
+    int j = currDoc->ActivePageIndex();
+    TVarRec tempvar[1] = {d2};
+    currDoc->page[j]->label->Caption = Format("distance = %d", tempvar, 1);*/
+
+        }
+        _selected[0]->Select();
+    }
+};
+
+void TGPage::Draw() {
+    unsigned int i;
+    for (i = 0; i < _tb.size(); i++) {
+        _tb[i].Draw();
+    }
+    for (i = 0; i < _arrow.size(); i++) {
+        _arrow[i].Draw();
+    }
+};
+
+//---------------------------------------------------------------------
+void __fastcall TGPage::FormMouseDown(TObject *Sender,
+      TMouseButton Button, TShiftState Shift, int X, int Y)
+{
+    int i;
+    GPoint pt(X, Y);
+
+    switch (MainForm->drawButton) {
+    case dtSelect:
+        if (_selected.size() == 1) {
+            motion = _selected[0]->Motion(pt);
+            if (motion == CHANGE_SIZE) {
+                _selected[0]->ActiveAdjustSize(pt);
+            }
+            else if (motion == MOVE) {
+                _selected[0]->ActiveMove(pt);
+            }
+        }
+        else if (PointInSelectedArea(&pt)) {
+            for (i = 0; i < _selected.size(); i++) {
+                _selected[i]->ActiveMove(pt);
+            }
+            motion = MOVE;
+        }
+        break;
+    case dtState:
+        _tb.push_back(GTextBox(&GRect(X, Y, X, Y))); // add a new State to vector
+        _tb.rebegin().Draw(); // Draw the new State
+        break;
+    case dtTransition:
+        Canvas->MoveTo(X, Y);
+        origin = pt;
+        movePt = origin;
+        tmpArrow.Initial(pt, pt, false);
+        tmpArrow.ActiveAdjustSize(pt);
+        break;
+    }
+    mouseDown = true;
+
+    TVarRec tempvar[2] = {X, Y};
+    currDoc->Memo1->Text = Format("Origin: (%d, %d)", tempvar, 2);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TGPage::FormMouseMove(TObject *Sender,
+      TShiftState Shift, int X, int Y)
+{
+    GPoint pt(X, Y);
+
+    if (mouseDown) {
+        switch (MainForm->drawButton) {
+            case dtSelect:
+                if (motion == CHANGE_SIZE && _selected.size() == 1) {
+                    _selected[0]->AdjustSize(pt);
+                }
+                else if (motion == MOVE) {
+                    for (i = 0; i < _selected.size(); i++) {
+                        _selected[i]->Move(pt);
+                    }
+                }
+                break;
+            case dtTransition:
+                tmpArrow.AdjustSize(pt);
+                break;
+        }
+    }
+
+    TVarRec tempvar[2] = {X, Y};
+    currDoc->Memo1->Text = Format("Current: (%d, %d)", tempvar, 2);
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TGPage::FormMouseUp(TObject *Sender, TMouseButton Button,
+      TShiftState Shift, int X, int Y)
+{
+    int i;
+    GPoint pt(X, Y);
+
+    if (mouseDown && X <= Width && Y <= Height) {
+        switch (MainForm->drawButton) {
+        case dtSelect:
+            if (_selected.size() == 1 && motion == CHANGE_SIZE) {
+				AdjustSelectedControlSize(pt);
+    			Refresh(); // clear canvas and trigger TGPage::Draw()
+            }
+            else if (_selected.size() > 0 && motion == MOVE) {
+				MoveSelectedControl(pt);
+    			Refresh(); // clear canvas and trigger TGPage::Draw()
+            }
+            break;
+        case dtTransition:
+            AddTransition(origin, pt);   
+            Refresh();
+            break;
+        }
+    }
+    mouseDown = false;
+    if (Button == mbRight) {
+    int j = currDoc->ActivePageIndex();
+    int left = currDoc->Left + currDoc->ppc->Left + currDoc->pts[j]->Left + currDoc->page[j]->Left;
+    int top = MainForm->ToolBar2->Height + currDoc->Top + currDoc->ppc->Top + currDoc->pts[j]->Top + currDoc->page[j]->Top;
+        PopupMenu->Popup(left + X, top + Y);
+    }
+
+}
+//---------------------------------------------------------------------------
+
+
+void __fastcall TGPage::FormPaint(TObject *Sender)
+{
+static int k;
+k++;
+    MainForm->StatusBar->SimpleText = "TGPage::FormPaint" + IntToStr(k);
+    Draw();
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TGPage::FormClick(TObject *Sender)
+{
+    GPoint pt(X, Y);
+
+    switch (MainForm->drawButton) {
+    case dtSelect:
+        SelectControl(pt);
+        break;
+    }
+}
+//---------------------------------------------------------------------------
+

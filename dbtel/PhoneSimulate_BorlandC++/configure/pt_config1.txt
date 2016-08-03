@@ -1,0 +1,42 @@
+AnswerPhone:AutoAnswer Off
+AnswerPhone:AnyKeyAnswer Off
+Click Off
+ChargingTone Off
+ConfirmTone Off
+HaveRegistered Base1
+FindBase1 true
+FindBase2 true
+FindBase3 true
+FindBase4 true
+RegisterBase1 Success
+RegisterBase2 Fail
+RegisterBase3 Success
+RegisterBase4 Success
+SelectBase 1
+PriorityCallAlert VIP1
+IdleDisplayOn 1
+IdleDisplay 29696 // 0:Base Name, 1:Date & Time
+IdleDisplay:ProductName 
+IdleDisplay:BaseName SelectLanguage
+SelectLanguage 875704369
+ExternalRingMelody 0
+ExternalRingVolume 0
+InternalRingMelody 0
+InternalRingVolume 0
+AlarmOnOff 0
+AlarmTime::Hour 0
+AlarmTime::Minute 0
+AlarmTime::Second 0
+AppointOnOff 0 // 0:On, 1:Off
+MemoNoteOnOff 0 // 0:On, 1:Off
+RoomMonitorOnOff 0 // 0:On, 1:Off
+Battery full
+[Phone_Book] {
+}
+[Ring_Vip] {
+Melody 0	Volume 0
+Melody 0	Volume 0
+Melody 0	Volume 0
+Melody 0	Volume 0
+Melody 0	Volume 0
+}

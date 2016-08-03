@@ -1,0 +1,33 @@
+cmake -DBUILD_SHARED_LIB=CURRENT -DBUILD_EXE=CURRENT .
+time make -j8
+real	4m4.298s
+user	30m1.382s
+sys	1m30.327s
+
+cmake -DBUILD_SHARED_LIB=SH_COMMAND -DBUILD_EXE=CURRENT .
+time make -j8
+real	4m11.674s
+user	29m44.568s
+sys	1m31.625s
+
+cmake -DBUILD_SHARED_LIB=ADD_LIBRARY -DBUILD_EXE=OBJECT .
+time make -j8
+add_library (csim SHARED ${INTERFACE_V8_CPP} ${AARCH64_INST_CPP})
+real	5m4.017s
+user	37m23.189s
+sys	1m57.807s
+
+cmake -DBUILD_SHARED_LIB=ADD_LIBRARY -DBUILD_EXE=OBJECT .
+add_library(AARCH64_INST_OBJECTS OBJECT ${AARCH64_INST_CPP})
+add_library (csim SHARED ${INTERFACE_V8_CPP} $<TARGET_OBJECTS:AARCH64_INST_OBJECTS>)
+real	4m5.425s
+user	30m7.982s
+sys	1m30.764s
+
+cmake -DBUILD_SHARED_LIB=ADD_LIBRARY_CPP -DBUILD_EXE=CPP .
+time make -j8
+real	12m9.950s
+user	89m54.165s
+sys	5m10.125s
+=> Rebuild src/v8/aarch64/instruction/ for every exe file.
+

@@ -1,0 +1,32 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: ENCODE - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\TB02134\LOCALS~1\Temp\RSP37.tmp" with contents
+[
+/nologo /ML /w /W0 /Gm /GX /ZI /O1 /D "WIN32" /D "_CONSOLE" /D "_MBCS" /Fp"Debug/ENCODE.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\gamma\作業程式\image_processing\JPEG\ENCODE.CPP"
+]
+Creating command line "cl.exe @C:\DOCUME~1\TB02134\LOCALS~1\Temp\RSP37.tmp" 
+Creating temporary file "C:\DOCUME~1\TB02134\LOCALS~1\Temp\RSP38.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"Debug/ENCODE.pdb" /machine:I386 /out:"Debug/ENCODE.exe" /pdbtype:sept 
+".\Debug\ENCODE.OBJ"
+]
+Creating command line "link.exe @C:\DOCUME~1\TB02134\LOCALS~1\Temp\RSP38.tmp"
+<h3>Output Window</h3>
+Compiling...
+Command line error D2016 : '/ZI' and '/O1' command-line options are incompatible
+Error executing cl.exe.
+
+
+
+<h3>Results</h3>
+ENCODE.exe - 1 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

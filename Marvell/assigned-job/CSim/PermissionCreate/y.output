@@ -1,0 +1,253 @@
+   0  $accept : input $end
+
+   1  regname : ID
+   2          | ID '_' exceptionlevel
+
+   3  exceptionlevel : ID
+
+   4  op0 : NUM
+
+   5  defreg : DEFREG '(' regname ',' exceptionlevel ',' op0 ')'
+
+   6  deftrap : DEFTRAP '(' STR ',' exceptionlevel ')'
+
+   7  deftraps : deftrap
+   8           | deftraps deftrap
+
+   9  defend : DEFEND
+
+  10  defregperm : defreg deftraps defend
+
+  11  defregperms : defregperm
+  12              | defregperms defregperm
+
+  13  input : defregperms
+
+state 0
+	$accept : . input $end  (0)
+
+	DEFREG  shift 1
+	.  error
+
+	input  goto 2
+	defreg  goto 3
+	defregperm  goto 4
+	defregperms  goto 5
+
+
+state 1
+	defreg : DEFREG . '(' regname ',' exceptionlevel ',' op0 ')'  (5)
+
+	'('  shift 6
+	.  error
+
+
+state 2
+	$accept : input . $end  (0)
+
+	$end  accept
+
+
+state 3
+	defregperm : defreg . deftraps defend  (10)
+
+	DEFTRAP  shift 7
+	.  error
+
+	deftrap  goto 8
+	deftraps  goto 9
+
+
+state 4
+	defregperms : defregperm .  (11)
+
+	.  reduce 11
+
+
+state 5
+	defregperms : defregperms . defregperm  (12)
+	input : defregperms .  (13)
+
+	DEFREG  shift 1
+	$end  reduce 13
+
+	defreg  goto 3
+	defregperm  goto 10
+
+
+state 6
+	defreg : DEFREG '(' . regname ',' exceptionlevel ',' op0 ')'  (5)
+
+	ID  shift 11
+	.  error
+
+	regname  goto 12
+
+
+state 7
+	deftrap : DEFTRAP . '(' STR ',' exceptionlevel ')'  (6)
+
+	'('  shift 13
+	.  error
+
+
+state 8
+	deftraps : deftrap .  (7)
+
+	.  reduce 7
+
+
+state 9
+	deftraps : deftraps . deftrap  (8)
+	defregperm : defreg deftraps . defend  (10)
+
+	DEFTRAP  shift 7
+	DEFEND  shift 14
+	.  error
+
+	deftrap  goto 15
+	defend  goto 16
+
+
+state 10
+	defregperms : defregperms defregperm .  (12)
+
+	.  reduce 12
+
+
+state 11
+	regname : ID .  (1)
+	regname : ID . '_' exceptionlevel  (2)
+
+	'_'  shift 17
+	','  reduce 1
+
+
+state 12
+	defreg : DEFREG '(' regname . ',' exceptionlevel ',' op0 ')'  (5)
+
+	','  shift 18
+	.  error
+
+
+state 13
+	deftrap : DEFTRAP '(' . STR ',' exceptionlevel ')'  (6)
+
+	STR  shift 19
+	.  error
+
+
+state 14
+	defend : DEFEND .  (9)
+
+	.  reduce 9
+
+
+state 15
+	deftraps : deftraps deftrap .  (8)
+
+	.  reduce 8
+
+
+state 16
+	defregperm : defreg deftraps defend .  (10)
+
+	.  reduce 10
+
+
+state 17
+	regname : ID '_' . exceptionlevel  (2)
+
+	ID  shift 20
+	.  error
+
+	exceptionlevel  goto 21
+
+
+state 18
+	defreg : DEFREG '(' regname ',' . exceptionlevel ',' op0 ')'  (5)
+
+	ID  shift 20
+	.  error
+
+	exceptionlevel  goto 22
+
+
+state 19
+	deftrap : DEFTRAP '(' STR . ',' exceptionlevel ')'  (6)
+
+	','  shift 23
+	.  error
+
+
+state 20
+	exceptionlevel : ID .  (3)
+
+	.  reduce 3
+
+
+state 21
+	regname : ID '_' exceptionlevel .  (2)
+
+	.  reduce 2
+
+
+state 22
+	defreg : DEFREG '(' regname ',' exceptionlevel . ',' op0 ')'  (5)
+
+	','  shift 24
+	.  error
+
+
+state 23
+	deftrap : DEFTRAP '(' STR ',' . exceptionlevel ')'  (6)
+
+	ID  shift 20
+	.  error
+
+	exceptionlevel  goto 25
+
+
+state 24
+	defreg : DEFREG '(' regname ',' exceptionlevel ',' . op0 ')'  (5)
+
+	NUM  shift 26
+	.  error
+
+	op0  goto 27
+
+
+state 25
+	deftrap : DEFTRAP '(' STR ',' exceptionlevel . ')'  (6)
+
+	')'  shift 28
+	.  error
+
+
+state 26
+	op0 : NUM .  (4)
+
+	.  reduce 4
+
+
+state 27
+	defreg : DEFREG '(' regname ',' exceptionlevel ',' op0 . ')'  (5)
+
+	')'  shift 29
+	.  error
+
+
+state 28
+	deftrap : DEFTRAP '(' STR ',' exceptionlevel ')' .  (6)
+
+	.  reduce 6
+
+
+state 29
+	defreg : DEFREG '(' regname ',' exceptionlevel ',' op0 ')' .  (5)
+
+	.  reduce 5
+
+
+12 terminals, 11 nonterminals
+14 grammar rules, 30 states

@@ -1,0 +1,13 @@
+		}
+		it.Next();
+	}
+
+	// change to next states according event
+	PreorderIterator<int> it1(_root);
+	it1.First();
+	while (!it1.IsDone()) {
+		bool changeState = false;
+		BinTree<int> *p;
+		BinTree<int> *curr = it1.Current();
+		//cout << stateName[curr->data] << endl;
+		switch(curr->data) {

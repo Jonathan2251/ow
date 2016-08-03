@@ -1,0 +1,138 @@
+
+/* --- Test Item List ---
+# 1st number is test item number
+# 2nd string is description
+*/
+
+TESTITEM_DECLARATION
+{
+// Display info & debug
+0	"Display station, test items and version information on RS232, setting:(38400,8,O,1,n)"
+1	"For debug, Switch to TvMon Command"	// For lab., keyin "exit" in root menu to exit TvMon.
+2	"For debug, Switch to our menu"
+3	"For demo, loop forever (add time out solution)"
+6	"For debug, display long error code on RS232"
+7	"For debug, Decorator pattern demo"
+10	"For debug, erase PFD entire data area and protect sectors 0 to 7"	// For trouble shooting 
+13	"For debug, test OSD"
+14	"For debug, Cache mode change test (without Timeout)"
+15	"For debug, station 4 test"
+
+// Chip ID test
+17	"OTP Lock regardless of initial state of device"
+20	"Tuner ID check (QIP7100P2:Tuner1, QIP72xxP2:Tuner1+Tuner2)"
+21	"Board ID check"
+22	"PSOC Version Check"
+23	"Chip ID (BCM3517) access test (by check revision, QIP7100P2:Demod1, QIP72xxP2:Demod1+Demod2)"
+24	"Chip ID BCM7400 access test (by read processor version)"
+25	"Chip ID (SATA IO controller) access test (by read device ID)"
+26	"Chip ID (JEDI 1394) access test (by read vendor ID)"
+27	"Chip ID (Entropic EN2210) access test (by read device ID)"
+28	"OTP Lock"
+29	"1394 OHCI Test"
+30	"OTP Lock Status Check"
+
+
+// Memory test (Catche, SDRAM, NVSRAM and Flash)
+31	"Cache mode change test"
+32	"Verify SDRAM Size = 512MB, and System SDRAM address/data bus (word) test"
+35	"DMA from SDRAM to SDRAM"
+
+38	"Switch to MTC i.e. Copy the MTC SUDB to flash"
+
+40	"TC/MTC Sudb CRC check"
+41	"Flash Password Lock and protect sectors 0 to 7"
+42	"Flash check, Device Type = S29GL512N, NumberOfBlocks = 512, BlockSize = 131072, Full Device Id = 7E2301"
+43	"Verify PFD area is cleaned"
+
+44	"DMA from DDR0 to DDR1"
+45	"DMA from DDR0 to DDR2"
+
+// Front End test
+52	"Get VCXO test result from SIE"
+
+53	"BCM3517 OOB receive test (75.25Mhz) (Just Lock)"
+54	"BCM3517 OOB receive test (72.75Mhz) (Just Lock)"
+55	"BCM3517 OOB receive test (125.0Mhz) (Just Lock)"
+
+56	"Entropic CW Signal (Unmodulated) Test (1500MHz, 0 +/- ??dBm), MOCA test"	// My measurement is -7dBm, what is the spec. ?
+57	"Entropic Continuous Output Signal (Modulated) Test (1475 MHz to 1525, 0 +/- 3dBm), MOCA test"
+58	"Entropic Continuous Output Signal (Modulated) Test (1125 MHz to 1175, 0 +/- 3dBm), MOCA test"
+59	"Start Factory Clocks Test"
+60	"Stop Factory Clocks Test (Back to default state)"
+
+// AV test
+61	"Tuner 1(256QAM, freq=85000000, vPid=800, audio=801), Tuner 2(64QAM, freq=183000000, vPid=8c0) A/V test, with output interface Composite, Component, RF channel 3, s-video and Audio SPDIF"
+62	"Tuner 2( 64QAM, freq=183000000, vPid=8c0, audio=801) A/V test (with M card), with output interface Composite, Component, RF channel 3, s-video and 1394 Tx Test"
+63	"Tuner 1(256QAM, freq=85000000, vPid=800, audio=801) A/V test, with output interface Composite, Component, RF channel 3, s-video and Audio SPDIF"
+64	"Tuner 1( 64QAM, freq=183000000, vPid=8c0, audio=801) A/V test (with M card), with output interface Composite, Component, RF channel 3, s-video, Audio SPDIF and 1394 Tx Test"
+65	"Tuner 1(256QAM, freq=85000000, vPid=1d0, audio=1d1), Tuner 2(64QAM, freq=183000000, vPid=880) A/V test, with output interface Composite, Component, RF channel 3, s-video and Audio SPDIF"
+66	"Tuner 1( 64QAM, freq=183000000, vPid=880, audio=881) A/V test (with M card), with output interface Composite, Component, RF channel 3, s-video, Audio SPDIF and 1394 Tx Test"
+67	"Tuner 1(256QAM, freq=85000000, vPid=1d0, audio=1d1) A/V test, with output interface Composite, Component, RF channel 3 and Audio SPDIF"
+
+// M-Card test
+71	"M-Card Detect Test (Using original M-Card)"
+73	"M-Card MSPI Test (Using original M-Card)"	// Only original M-Card work
+74	"M-Card OOB Downstream Test (75.25MHz) (Using CCMTC M-Card)"
+75	"M-Card OOB Downstream Test (125MHz) (Using CCMTC M-Card)"
+// Peripheral test
+//81	"Front panel keypad (manual) test (press power to exit)"	// Exist in 2:OurMenu
+
+82	"Front panel LED test (for hardware team)"
+83	"Front panel LED test (for product-line)"
+
+85	"IR Receive Test (With timeout || Press Key 1 to exit)"
+
+87	"Ethernet External loop back test"
+
+88	"Rear panel USB port Test"
+89	"Front panel USB port Test"
+
+90	"SATA Hard Drive Test ( Internal ) (MTC do this)"
+91	"SATA Hard Drive Test ( External ) (MTC do this)"
+
+92	"AC_outlet ON"
+93	"AC_outlet OFF"
+
+94	"1394 interrupt line test"
+
+//tuner performance test
+133	"Tuner 0 phase noise test"
+134	"Tuner 1 phase noise test"
+135 	"Tuner 0 on-board performance test"
+136	"Tuner 1 on-board performance test"
+
+255	"No Test Item"
+}
+
+ACTIONITEM_DECLARATION
+{
+// Display info & debug
+4	"Reserved, for enable timer interrupt"
+5	"Reserved, for disable timer interrupt"
+11	"For debug, Enable pdebug and TvMon layer rs232 output"
+12	"For debug, Disable pdebug and TvMon layer rs232 output"
+
+// Front End test
+51	"Ask SIE to do VCXO test"
+
+// Other
+201	"Display error code on LED"
+202	"Display error code on LED and return Error Code to SIE"
+203	"Display PASS/FAIL on LED & OSD for last item test result"
+204	"Display error code on TV screen"
+
+205	"WaitKey(KEY_CH_UP|KEY_CH_DOWN)"
+206	"Automaticlly power on/off MCard during WaitKey(KEY_CH_UP|KEY_CH_DOWN)"
+207	"Display error code ( > 4 char) on LED"
+208	"Return Error Code ( > 4 char) to SIE"
+209	"WaitKey(KEY_SELECT)"
+210	"Automaticlly power on/off MCard during WaitKey(KEY_SELECT)"
+211	"Display error code on LED & OSD"
+212	"Endless loop if last item test fail"
+}
+
+CONTROLITEM_DECLARATION
+{
+253	"delay_100ms(x)"	// delay_100ms(20) => delay 2 seconds
+}

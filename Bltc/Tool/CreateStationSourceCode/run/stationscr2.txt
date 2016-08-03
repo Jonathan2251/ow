@@ -1,0 +1,23 @@
+// dct3xxx board level test station management script file
+// author : Gamma Chen
+
+#include <..\\Items.txt>
+
+
+// delay_100ms(20) : delay 2 seconds
+// wait_keyin()
+
+STATION 01 WITH_SIE
+ITEM 16 15 12 113 114 115 116 18 19 10 67 47 8 81 11 118
+
+STATION 02 WITHOUT_SIE
+ITEM 31 33 29 22 23 20 46 35 36 26 98 97
+
+STATION 03 WITHOUT_SIE
+ITEM 82 delay_100ms(20) 45 55 56 57 27 28 30 53
+
+STATION 04 WITHOUT_SIE
+ITEM 121 delay_100ms(20) 25  delay_100ms(10) wait_keyin(KEY_SELECT) 120 delay_100ms(10) 91 wait_keyin(KEY_CH_UP) 108 wait_keyin(KEY_SELECT) 44
+
+STATION 05 WITHOUT_SIE
+ITEM 42

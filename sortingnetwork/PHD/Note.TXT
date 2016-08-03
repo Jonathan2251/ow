@@ -1,0 +1,8 @@
+1. In web, ieeexplore.ieee.org, and search sorting network, will get a lot of paper.
+2. Program for Build A Sorting Network:
+
+http://pages.ripco.net/~jgamble/nw.html or
+
+http://en.wikipedia.org/wiki/Sorting_network    External links - List of Sorting Networks
+
+

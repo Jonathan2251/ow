@@ -1,0 +1,23 @@
+state A
+state B
+state D
+
+state C
+thread G
+substate A,B  //First substate, A, is default substate
+transition ?Event2?!Action2()! from A to B
+transition ?Event3?!Action2()! from B to A
+thread H
+substate D,B 
+transition ?Event3?!Action2()! from D to B
+
+state F
+substate D
+
+state E
+substate C,F,B
+transition ?Event1?!Action1()! from C:G:B to F:D
+transition ?Event2?!Action1()! from F:D to B
+transition ?Event3?!Action3()! from F:D to C
+
+

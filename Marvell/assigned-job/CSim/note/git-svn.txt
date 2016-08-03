@@ -1,0 +1,4 @@
+git svn rebase
+
+git cod ../lib/zlib-1.2.8/zconf.h  => git checkout with discard old files
+

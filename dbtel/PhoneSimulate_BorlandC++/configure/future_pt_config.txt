@@ -1,0 +1,19 @@
+HSVolume 9
+Ext.Ring 5
+Int.Ring 5
+Ans/PickUpFeats:AutoAnswer on // On, Off
+Ans/PickUpFeats:AnyKeyAnswer on
+Ans/PickUpFeats:DirectCall on
+Registration Base1
+SelectBase Base1
+PriorityCallAlert:VIP1
+IdleDisplayName:ProductName DBTEL
+IdleDisplayName:BaseName John
+SelectLanguage English
+DefaultHS true
+//BaseSetting
+Pin 0000
+Tone:Keyclick on
+Tone:ChargingTone on
+Tone:ConfirmTone on
+//RecSelfRing

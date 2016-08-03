@@ -1,0 +1,35 @@
+Phone Book
+	Search
+		HS Book
+		BS Book
+	Add Entry
+		HS Book
+		BS Book
+	Delete
+		One by one
+			HS Book
+			BS Book
+		Delete all
+			HS Book
+			BS Book
+	Assign Tone
+		Rename Group
+			ABC
+			VIP 2
+			VIP 3
+			VIP 4
+			VIP 5
+		Group
+			VIP 1
+			VIP 2
+			VIP 3
+			VIP 4
+			VIP 5
+	Transmit
+		To Handset
+			To HS1
+			To HS2
+			To HS3
+			To HS4
+			To HS5
+		To Base

@@ -1,0 +1,42 @@
+cmake_minimum_required(VERSION 2.6)
+
+#set (CMAKE_VERBOSE_MAKEFILE true)
+
+set (SRC_PATH ../../../../../src/v8/aarch64)
+set (GTEST_ROOT ../../../../../lib/google_test)
+set (CSIM_ROOT ../../../../../prj/linux-gcc)
+
+include_directories (${SRC_PATH}/system_register/)
+include_directories (${SRC_PATH}/execution/)
+include_directories (../../../../../include/)
+include_directories (${GTEST_ROOT}/include/)
+
+set (WARNING_FLAGS "-Wall -Wold-style-cast -Woverloaded-virtual -Wfloat-equal -Wshadow -Wcast-qual -Wconversion -Wextra -Winit-self -Wcast-align -Weffc++")
+set (CMAKE_CXX_FLAGS "-g ${WARNING_FLAGS}")
+set (SYSTEM_REGISTER_PATH ${SRC_PATH}/system_register)
+set (STATE_SYSREG_PATH ${SRC_PATH}/system_register/state_reg)
+set (EXECUTION_PATH ${SRC_PATH}/execution)
+set (CSIM_LIB libcsim_test.a)
+set (GTEST_LIB libgtest.a)
+set (AARCH64_RO_SYSREG_OBJECTS
+	${SYSTEM_REGISTER_PATH}/system_register_manager.cpp
+	${SYSTEM_REGISTER_PATH}/sysreg.cpp
+	${SYSTEM_REGISTER_PATH}/ro_sysreg.cpp
+	${SYSTEM_REGISTER_PATH}/esr_sysreg.cpp
+    ${STATE_SYSREG_PATH}/spsel.cpp
+    ${STATE_SYSREG_PATH}/daif.cpp
+    ${STATE_SYSREG_PATH}/cur_el.cpp
+    ${STATE_SYSREG_PATH}/nzcv.cpp
+	${EXECUTION_PATH}/processorstate.cpp
+     )
+
+link_directories(${CSIM_ROOT})
+link_directories(${GTEST_ROOT})
+
+link_libraries(pthread)
+
+add_library(aarch64_ro_sysreg_lib
+		${AARCH64_RO_SYSREG_OBJECTS})
+
+add_executable (ro_sysreg_test ro_sysreg_test.cpp)
+target_link_libraries (ro_sysreg_test aarch64_ro_sysreg_lib ${CSIM_LIB} ${GTEST_LIB})

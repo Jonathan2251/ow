@@ -1,0 +1,32 @@
+1.基本功能;2.擴展功能:1
+Please input the file of maze:ex2inp2.txt
+Please input the starting position:
+Please input the row position:1
+Please input the column position:1
+Can't find a path!
+<2>輸出原始迷宮內容，其中障礙部份以X顯示，可走部份以O顯示。
+OOOOOXOOOOOXXXX
+XOOOXXOXXXOOXXX
+OOXOOOXXXXXXOXX
+XXOOXXOOOOOOOXX
+XXOXOOXXXOXXOOO
+OOOXOXXOOXOOXOX
+OXXXOOOOXXXXXXX
+OOOXOXXOXXXXXOX
+XXOOOXXOXOOOOOO
+OOOXXXXOOOXXXXO
+OXOOXXXXXOXXXXO
+<3>將迷宮中從起點到終點所有走過的錯誤路徑顯示為*，其中正確路徑
+  （不含錯誤後走回頭的路徑）顯示為@，輸出迷宮搜尋過的狀態。
+*****XOOOOOXXXX
+X***XXOXXXOOXXX
+**X***XXXXXXOXX
+XX**XXOOOOOOOXX
+XX*X**XXXOXXOOO
+***X*XX**XOOXOX
+*XXX****XXXXXXX
+***X*XX*XXXXX*X
+XX***XX*X******
+***XXXX***XXXX*
+*X**XXXXX*XXXX*
+Do you want to try again? (y/n)n

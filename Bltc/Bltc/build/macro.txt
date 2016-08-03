@@ -1,0 +1,4 @@
+// #define <macro_name> <macro_body>\n
+#define	@W	205
+#define @D	delay_100ms(20)
+#define	_W_	205

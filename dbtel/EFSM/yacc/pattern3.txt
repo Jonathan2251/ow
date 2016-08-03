@@ -1,0 +1,12 @@
+	}
+	return s;
+};
+
+void EFSM::Run() { // input event and change ActiveStates
+	// process action()
+	InorderIterator<int> it(_root);
+	it.First();
+	while (!it.IsDone()) {
+		BinTree<int> *curr = it.Current();
+		//cout << it.Current()->data << endl;//test for trace state
+		switch(curr->data) {

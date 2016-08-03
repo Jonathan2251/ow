@@ -1,0 +1,6 @@
+// note :
+
+item	0	"Display BLTC version & station information on RS232, Hyperterminal setting as (38400, 8, o, 1, n)"
+item	1	"For debug, Switch to TvMon Command"
+item	10	"For debug, erase PFD entire data area"	// For trouble shooting
+item	15	"For debug, dump memory of address by user input address range"

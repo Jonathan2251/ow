@@ -1,0 +1,110 @@
+struct DC_code {
+	unsigned int baseCode;
+	int baseCodeLength;
+	int length;
+};
+
+struct AC_code {
+	unsigned long baseCode;
+	int run;
+	int category;
+	int baseCodeLength;
+	int length;
+};
+
+class HuffmanDecoder {
+private:
+	DC_code dc[12];
+	AC_code ac[16][11];
+public:
+	HuffmanDecoder() {
+		string str;
+		string::reverse_iterator p;
+
+		ifstream is1("JPEG_Default_DC_Code.txt"); // load JPEG default DC code table
+		for (int i = 0; i < 12; i++) {
+			unsigned int baseCode = 0;
+			is1 >> str;
+			for (p = str.rbegin(); p != str.rend(); p++) {
+				baseCode >>= 1;
+				if (*p == '1') baseCode += 0x8000;
+			}
+			dc[i].baseCode = baseCode;
+			is1 >> dc[i].baseCodeLength;
+			is1 >> dc[i].length;
+		}
+		is1.close();
+		ifstream is("JPEG_Default_AC_Code.txt"); // load JPEG default AC code table
+		for (int j = 0; j < 11; j++) {
+			unsigned long baseCode = 0;
+			is >> str;
+			for (p = str.rbegin(); p != str.rend(); p++) {
+				baseCode >>= 1;
+				if (*p == '1') baseCode += 0x80000000;
+			}
+			ac[0][j].baseCode = baseCode;
+			ac[0][j].run = 0;
+			ac[0][j].category = j;
+			is >> ac[0][j].baseCodeLength;
+			is >> ac[0][j].length;
+		}
+		for (i = 1; i < 15; i++) {
+			ac[i][j].baseCode = 0;
+			ac[i][j].run = i;
+			ac[i][j].category = j;
+			ac[i][j].baseCodeLength = -1;
+			ac[i][j].length = 0;
+			for (j = 1; j < 11; j++) {
+				unsigned long baseCode = 0;
+				is >> str;
+				for (p = str.rbegin(); p != str.rend(); p++) {
+					baseCode >>= 1;
+					if (*p == '1') baseCode += 0x80000000;
+				}
+				ac[i][j].baseCode = baseCode;
+				ac[i][j].run = i;
+				ac[i][j].category = j;
+				is >> ac[i][j].baseCodeLength;
+				is >> ac[i][j].length;
+			}
+		}
+		for (j = 0; j < 11; j++) {
+			unsigned long baseCode = 0;
+			is >> str;
+			for (p = str.rbegin(); p != str.rend(); p++) {
+				baseCode >>= 1;
+				if (*p == '1') baseCode += 0x80000000;
+			}
+			ac[15][j].baseCode = baseCode;
+			ac[15][j].run = 15;
+			ac[15][j].category = j;
+			is >> ac[15][j].baseCodeLength;
+			is >> ac[15][j].length;
+		}
+		is.close();
+	};
+	inline bool getDC_code(unsigned int baseCode, int baseCodeLength, DC& aDc) {
+		for (int i = 0; i < 12; i++) {
+			if ((baseCode == dc[i].baseCode)&&(baseCodeLength == dc[i].baseCodeLength)) {
+				aDc.baseCodeLength = dc[i].baseCodeLength;
+				aDc.length = dc[i].length;
+				return true;
+			}
+		}
+		return false;
+	};
+	inline bool getAC_code(unsigned long baseCode, int baseCodeLength, AC& aAc) {
+		for (int i = 0; i < 16; i++) {
+			for (int j = 0; j < 11; j++) {
+				if ((baseCode == ac[i][j].baseCode)&&(baseCodeLength == ac[i][j].baseCodeLength)) {
+					aAc.run = ac[i][j].run;
+					aAc.category = ac[i][j].category;
+					aAc.baseCodeLength = ac[i][j].baseCodeLength;
+					aAc.length = ac[i][j].length;
+					return true;
+				}
+			}
+		}
+		return false;
+	};
+};

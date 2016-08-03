@@ -1,0 +1,236 @@
+Begin from 2.8.9
+
+cschen@cschen-01:~/llvm/test/ninja_build$ ~/tools/cmake-2.6.4/build/bin/cmake --help
+cmake version 2.6-patch 4
+...
+The following generators are available on this platform:
+  Unix Makefiles              = Generates standard UNIX makefiles.
+  CodeBlocks - Unix Makefiles = Generates CodeBlocks project files.
+  Eclipse CDT4 - Unix Makefiles
+                              = Generates Eclipse CDT 4.0 project files.
+  KDevelop3                   = Generates KDevelop 3 project files.
+  KDevelop3 - Unix Makefiles  = Generates KDevelop 3 project files.
+
+cschen@cschen-01:~/llvm/test/ninja_build$ cmake --help
+cmake version 2.8.12.2
+...
+The following generators are available on this platform:
+  Unix Makefiles              = Generates standard UNIX makefiles.
+  Ninja                       = Generates build.ninja files (experimental).
+  CodeBlocks - Ninja          = Generates CodeBlocks project files.
+  CodeBlocks - Unix Makefiles = Generates CodeBlocks project files.
+  Eclipse CDT4 - Ninja        = Generates Eclipse CDT 4.0 project files.
+  Eclipse CDT4 - Unix Makefiles
+                              = Generates Eclipse CDT 4.0 project files.
+  KDevelop3                   = Generates KDevelop 3 project files.
+  KDevelop3 - Unix Makefiles  = Generates KDevelop 3 project files.
+  Sublime Text 2 - Ninja      = Generates Sublime Text 2 project files.
+  Sublime Text 2 - Unix Makefiles
+                              = Generates Sublime Text 2 project files.
+
+
+cschen@cschen-01:~/test/1/Csim_PJ4/trunk/prj/linux-gcc/cmake_v8$ 
+
+cmake -G Ninja .
+time ninja -j8
+real	3m58.293s
+user	30m5.561s
+sys	1m16.597s
+
+cmake .
+time make -j8
+real	4m5.634s
+user	29m57.486s
+sys	1m26.882s
+
+ninja -t clean is faster than make clean
+https://cmake.org/pipermail/cmake-developers/2012-April/015526.html
+
+ninja -t clean
+Cleaning... 3264 files.
+real	0m0.096s
+user	0m0.024s
+sys	0m0.072s
+
+time make clean
+real	0m0.784s
+user	0m0.497s
+sys	0m0.289s
+
+time ninja -j8 -t clean
+Cleaning... 3264 files.
+real	0m0.391s
+user	0m0.029s
+sys	0m0.061s
+
+time make -j8 clean
+real	0m0.230s
+user	0m0.546s
+sys	0m0.274s
+
+Both cmake and ninja run as slow as first time of build after "make clean".
+
+touch ../../../include/*
+time ninja -j8
+real	4m3.430s
+user	29m44.611s
+sys	1m23.171s
+
+
+llvm build time as follows,
+
+cmake -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_FLAGS=-std=c++11 -G "Unix Makefiles" ../src/
+time make -j8
+real	10m10.268s
+user	64m7.412s
+sys	2m5.962s
+
+cmake -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_FLAGS=-std=c++11 -G "Ninja" ../src/
+time ninja -j8
+real	8m36.972s
+user	64m8.413s
+sys	1m48.311s
+
+time cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../src/
+real	0m12.027s
+user	0m8.661s
+sys	0m3.400s
+
+time make -j8 check-all
+lit.py: lit.cfg:195: note: using clang: '/home/cschen/llvm/release/cmake/./bin/clang'
+lit.py: lit.cfg:333: note: Did not find clang-interpreter in /home/cschen/llvm/release/cmake/./bin:/home/cschen/llvm/release/cmake/./bin
+lit.py: lit.cfg:279: note: Did not find llvm-go in /home/cschen/llvm/release/cmake/./bin
+Testing Time: 321.38s
+  Expected Passes    : 22381
+  Expected Failures  : 119
+  Unsupported Tests  : 79
+[100%] Built target check-all
+real	27m36.371s
+user	157m24.809s
+sys	10m15.202s
+
+time cmake -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ../src
+real	0m11.259s
+user	0m8.713s
+sys	0m2.562s
+
+time ninja -j8 check-all
+[2613/2613] Running all regression tests
+lit.py: lit.cfg:195: note: using clang: '/home/cschen/llvm/release/ninja/./bin/clang'
+lit.py: lit.cfg:333: note: Did not find clang-interpreter in /home/cschen/llvm/release/ninja/./bin:/home/cschen/llvm/release/ninja/./bin
+lit.py: lit.cfg:279: note: Did not find llvm-go in /home/cschen/llvm/release/ninja/./bin
+-- Testing: 22579 tests, 8 threads --
+Testing: 0 .. 10.. 20.. 30.. 40.. 50.. 60.. 70.. 80.. 90.. 
+Testing Time: 317.93s
+  Expected Passes    : 22381
+  Expected Failures  : 119
+  Unsupported Tests  : 79
+
+real	34m17.346s
+user	155m14.483s
+sys	9m49.198s
+
+
+使用make编译llvm-clang花费3个小时左右，使用ninja只需要10多分钟
+http://blog.sina.com.cn/s/blog_6114e8c80101arpu.html
+
+cschen@cschen-01:~/llvm/release/ninja$ ninja --help
+  -j N     run N jobs in parallel [default=10, derived from CPUs available]
+
+
+cschen@cschen-01:~/test/1/Csim_PJ4/trunk/prj/linux-gcc/cmake_v8$ 
+
+cmake .
+time make
+real	16m8.008s
+user	15m2.260s
+sys	1m3.860s
+
+
+Ninja vs make performance comparision from web:
+http://www.lanedo.com/a-quest-for-speed-in-compiling/
+http://hamelot.io/programming/make-vs-ninja-performance-comparison/
+http://jpospisil.com/2014/03/16/replacing-make-with-ninja.html
+
+
+touch ../../../include/memory.h
+time make -j8
+real	3m58.361s
+user	29m17.369s
+sys	1m32.339s
+
+
+touch ../../../include/memory.h
+time ninja -j8
+real	4m0.295s
+user	29m40.101s
+sys	1m21.861s
+
+
+cschen@cschen-01:~/test/1/Csim_PJ4/trunk/prj/linux-gcc/cmake_v8$ touch ../../../src/v8/aarch64/instruction/instruction.cpp
+cschen@cschen-01:~/test/1/Csim_PJ4/trunk/prj/linux-gcc/cmake_v8$ time make -j8
+real	0m5.785s
+user	0m19.369s
+sys	0m2.753s
+
+cschen@cschen-01:~/test/2/Csim_PJ4/trunk/prj/linux-gcc/cmake_v8$ touch ../../../src/v8/aarch64/instruction/instruction.cpp
+cschen@cschen-01:~/test/2/Csim_PJ4/trunk/prj/linux-gcc/cmake_v8$ time ninja -j8
+real	0m5.590s
+user	0m18.669s
+sys	0m2.217s
+
+
+
+No file change:
+
+cschen@cschen-01:~/test/1/Csim_PJ4/trunk/prj/linux-gcc/cmake_v8$ time make -j8
+[  0%] [  0%] Built target gen_wrapper
+Built target softfloat64
+[  0%] [  0%] [  0%] Built target gen_sub
+[  0%] Built target def_create
+Built target permission_create
+Built target gen_impl
+[  1%] [  3%] [  3%] [  3%] Built target aa32coprocessor
+Built target gdb_stub
+[  3%] Built target aa32memory
+[  4%] Built target aa32instruction
+Built target aa32execution
+Built target debugarch
+[  4%] Built target interface_v8
+[  5%] [ 11%] Built target model
+Built target coprocessor
+[ 11%] Built target net_console
+[ 11%] [ 13%] [ 14%] [ 14%] Built target memory
+Built target softfloat
+Built target tarmacparser
+Built target sharedfunc
+[ 17%] Built target mpcore
+[ 19%] Built target utility
+[ 20%] Built target aa64system_register
+[ 22%] Built target execution
+[ 22%] [ 23%] [ 23%] Built target aa64interprocessing
+Built target aa64memory
+Built target aa64execution
+[ 24%] Built target aa64utility
+[ 57%] Built target aa64inst
+[100%] Built target inst
+[100%] [100%] Built target gen_csim_so
+Built target csim_dpi
+[100%] Built target cfgquery
+[100%] Built target debuglevel
+[100%] [100%] Built target csim_v8_mpcore
+[100%] Built target net_console_exe
+Built target csim_mpcore
+[100%] Built target csim_v8
+
+real	0m0.511s
+user	0m1.073s
+sys	0m0.463s
+
+cschen@cschen-01:~/test/2/Csim_PJ4/trunk/prj/linux-gcc/cmake_v8$ time ninja -j8
+ninja: no work to do.
+
+real	0m0.072s
+user	0m0.048s
+sys	0m0.024s
+

@@ -1,0 +1,48 @@
+// Board level test station management script file
+// author : Gamma Chen
+
+#include <..\\Items.txt>
+#include <..\\macro.txt>
+
+// Note. Run TI073 after Digital AV Test will 50% fail. I think it came from interrupt conflict.
+
+
+// Follows for MODEL = "QIP72XXP2"
+MODEL = "QIP72XXP2"
+
+STATION 01
+DESCRIPTION : "1. Key : Cursor Up. 2. With SIE."
+ITEM              59 51 20 22 23 24 26 27 29 31 32 83 52 202 211
+
+STATION 02
+DESCRIPTION : "1. Key : Cursor Left. 2.Using Cable Card loaded with Cable Card MTC(CCMTC)."
+ITEM              42 94 87 88 89 35 44 45 74 54 55 211
+
+STATION 03
+DESCRIPTION : "1. Keys : Cursor Up + Cursor Left. 2. Using Original Cable Card."
+ITEM              71 73 57 209 58 211
+
+STATION 04
+DESCRIPTION : "1. Keys : Cursor Down. 2. Using Original Cable Card."
+ITEM              61 41 209 64 43 211 210 28 211 212 38 203
+
+
+// Follows for MODEL = "QIP7100P2"
+MODEL = "QIP7100P2"
+
+STATION 01
+DESCRIPTION : "1. Key : Cursor Up. 2. With SIE."
+ITEM              59 51 20 23 24 26 27 29 31 32 83 52 202 211
+
+STATION 02
+DESCRIPTION : "1. Key : Cursor Left. 2.Using Cable Card loaded with Cable Card MTC(CCMTC)."
+ITEM              42 94 87 88 89 35 44 45 74 54 55 211
+
+STATION 03
+DESCRIPTION : "1. Keys : Cursor Up + Cursor Left. 2. Using Original Cable Card."
+ITEM              71 73 57 209 58 211
+
+STATION 04
+DESCRIPTION : "1. Keys : Cursor Down. 2. Using Original Cable Card."
+ITEM              63 41 209 64 43 211 210 28 211 212 38 203
+

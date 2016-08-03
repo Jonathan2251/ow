@@ -1,0 +1,177 @@
+
+/* --- Test Item List ---
+# 1st number is test item number
+# 2nd string is description
+*/
+
+TESTITEM_DECLARATION
+{
+// Display info & debug
+0	"Display station information on RS232, setting:(115200,8,n,1,n)"
+1	"For debug, Switch to TvMon Command"	// For lab., keyin "exit" in root menu to exit TvMon.
+2	"For debug, run station test items list from RS232"
+3	"For debug, read station test items info from RS232 and save to BLTC reserved area of Flash"
+4	"For debug, run station from saved stationInfo in flash"
+5	"For debug, erase station info from flash"
+6	"For debug, check PFD entire data area is erased"	// Check address of (0xB8058000..0xB805FFFF) are 0xFFFFFFFF	
+7	"For debug, dump reserved PFD area"
+8	"For debug, dump SUDB/ECDS of BLTC"
+9	"For debug, dump SUDB and associated signature of MTC"
+10	"For debug, erase PFD entire data area"	// For trouble shooting 
+13	"For debug, dump SUDB and associated signature of TC"
+14	"For debug, dump Upstream data from NVSram"
+15	"For debug, dump memory of address by user input address range"
+
+// Chip check
+21	"Board ID check"
+22	"Chip ID (CX2584x) access test (by read vendor ID)"
+23	"Chip ID (BCM3254) access test (by read vendor ID)"
+24	"Chip ID BCM7038 access test (by read processor version)"
+25	"Chip ID (SATA IO controller) access test (by read device ID)"
+26	"Chip ID (JEDI 1394) access test (by read vendor ID)"
+27	"Chip ID (Entropic EN2010) access test (by read device ID)"
+28	"MPEG2 Encoder Chip ID test (LSI)"
+29	"1394 OHCI Test"
+30	"Chip ID (uPD64084) access test"
+
+31	"PSOC Version Check"
+
+32	"Usb bus test (BCM3254 device connected test)"
+33	"Uart test (BCM3254 device connected test)"
+
+// Memory test (Catche, SDRAM, NVSRAM and Flash)
+41	"Catche write directly test and write back to SDRAM test"
+42	"Cache mode change test"
+
+43	"System SDRAM 128MBytes address/data bus (word) test"
+44	"512MB DDR Retention test"	// For lab., need change from partial memory area to whole memory area. 64
+
+45	"BCM3254 SDRAM Long Read/Write test"
+46	"DMA from SDRAM to PCI (3254 memory)"
+47	"DMA from PCI (3254 memory) to SDRAM"
+48	"DMA from SDRAM to SDRAM"
+
+49	"NVSRAM data retention test (write)  (pattern = 0x55)"
+50	"NVSRAM data retention test (read back)  (pattern = 0x55)"
+51	"NVSRAM data retention test (write)  (pattern = 0x00)"
+52	"NVSRAM data retention test (read back)  (pattern = 0x00)"
+53	"NVSRAM data retention test (write)  (pattern = 0xFF)"
+54	"NVSRAM data retention test (read back)  (pattern = 0xFF)"
+55	"Verify BTSC and Upstream Power Offset data and CRC check in NVSRAM"
+56	"Switch to MTC i.e. Copy the MTC SUDB to NVMEM"
+57	"Set up NVSRAM ( Clear Upstream and BTSC )"
+
+58	"MPEG2 Encoder DDR Memory Test (LSI)"
+59	"TC/MTC CRC check"	// Need implement FFI CRC check in future
+60	"Flash Password Lock"
+61	"Flash Password Lock and protect sectors 0,1,2"	
+
+// M-Card test
+71	"M-Card Detect Test (Using original M-Card)"
+72	"M-Card MHIF Download/Control Test (Using original M-Card)"
+73	"M-Card MSPI Test (Using original M-Card)"	// Only original M-Card work
+74	"M-Card OOB Downstream Test (75.25MHz) (Using Cable Card loaded with Cable Card MTC (CCMTC))"
+75	"M-Card OOB Upstream Test(Using modified M-Card)"
+
+// I/O port test
+81	"Front panel keypad (manual) test (press power to exit)"
+
+82	"Front panel LED test (for hardware team)"
+83	"Front panel LED test (for product-line)"
+
+84	"IR Test (Press Power Key to exit, for hardware team)"	// For lab. 
+85	"IR Test (With timeout && Press key)"	// Implemented by Eric
+86	"IR Test (With timeout && Press key)"	// Implemented by Gamma, but using Eric version in product-line
+
+87	"Ethernet External loop back test"
+
+88	"Rear panel USB_1 Test"
+89	"Front panel USB_2 Test"
+
+90	"SATA Hard Drive Test ( Internal )"
+91	"SATA Hard Drive Test ( External )"
+
+92	"AC_outlet ON"
+93	"AC_outlet OFF"
+
+94	"Watch dog ON"	// For lab.
+95	"Watch dog OFF"	// For lab.
+
+
+97	"MiniPhone Serial port loopback test"	// Check if need ? 
+
+
+// A/V test
+101	"Tuner 1(64QAM, freq=8183000000, pid=900 900 901),Tuner 2(256QAM, freq=85000000, pid=290 290 291) A/V test"
+102	"Tuner 1(256QAM, freq=85000000, pid=800 800 801), Tuner 2(64QAM, freq=183000000, pid=8c0 8c0 8c1) A/V test"
+
+103	"Tuner 1(64QAM, channel=8, pid=8c0 8c0 8c1) A/V test, and 1394 Tx Test"
+104	"Tuner 2(64QAM, channel=8, pid=8c0 8c0 8c1) A/V test, and 1394 Tx Test"
+105	"Tuner 1(256QAM, channel=6, pid=310 310 311) A/V test, and 1394 Tx Test"
+106	"Tuner 2(256QAM, channel=6, pid=310 310 311) A/V test, and 1394 Tx Test"
+
+107	"Tuner 1(64QAM, channel=8, pid=8c0 8c0 801) A/V test (with M card) and 1394 Tx Test"
+108	"Tuner 2(64QAM, channel=8, pid=8c0 8c0 801) A/V test (with M card), and 1394 Tx Test"
+109	"Tuner 1(256QAM, channel=6, pid=310 310 311) A/V test (with M card), and 1394 Tx Test"
+110	"Tuner 2(256QAM, channel=6, pid=310 310 311) A/V test (with M card), and 1394 Tx Test"
+
+111	"Analog Test on Tuner 1"
+112	"Analog Test on Tuner 2"
+113	"Analog to Digital (Mpeg Encoder Test)"	// DCH34xx hasn't this hardware. This item cost 600KB size around.
+
+114	"Rear Panel Audio/Video Loop Through Test"	// DCH34xxP5 hardware not support
+115	"Analog Test on Tuner1/Tuner2 (wait keyin KEY_CH_UP|KEY_CH_DOWN between Tuner1 and Tuner2)"
+
+
+// RF & Cable power test
+121	"Get VCXO test result from SIE"
+
+122	"BCM3254 OOB receive test (75.25Mhz) (Just Lock)"
+123	"BCM3254 OOB receive test (72.75Mhz) (Just Lock)"
+124	"BCM3254 OOB receive test (125.0Mhz) (Just Lock)"
+
+125	"Entropic Continuous Output Test (0 +/- 3dBm)"	// MOCA test
+126	"Entropic Continuous Continuous Test"	// Not finished 
+
+127	"Cable Modem Upstream Calibration (repair center) (0 +/- 2dBm)"	// No need, run TI129 instead with.
+128	"Cable Modem Upstream Calibration (product-line) (0 +/- 2dBm)"	// TI130 and this item using the same path (only a single path for RFU and star view), so only run TI130.
+
+129	"Upstream power level alignment on 21 Mhz (repair center), (0 +/- 2dBm) (Calibration and save to PFD area)"	// Include Calibration and save to PFD area, it's for repair center
+130	"Upstream power level alignment on 21 Mhz (product-line), (0 +/- 2dBm) (Calibration and save to NVSRAM area)"	// Include Calibration and save to NVSRAM area, it's for product-line
+131	"Upstream power level alignment on 37 Mhz (0 +/- 1.2dBm)"
+132	"Upstream power level alignment on 42 Mhz (must > (13-2)dBm)"
+
+133	"DOCSIS CM Upstream power level alignment"	// Need this ?
+
+134	"Digital 64QAM docsis lock test (channel 8, 183Mhz)"
+135	"Digital 256QAM docsis lock test (channel 6, 85Mhz)"
+136	"Digital 64QAM docsis lock test (channel 137, 855Mhz)"
+137	"Digital 256QAM docsis lock test (channel 73, 471Mhz)"
+
+// Other
+140	"reserved"
+
+255	"No Test Item"
+}
+
+ACTIONITEM_DECLARATION
+{
+// Display info & debug
+11	"For debug, Enable pdebug and TvMon layer rs232 output"
+12	"For debug, Disable pdebug and TvMon layer rs232 output"
+
+// Other
+141	"Hide PIP"
+
+201	"Display error code on LED"
+202	"Display error code on LED and return Error Code to SIE"
+203	"Display PASS/FAIL on LED for last item test result"
+
+204	"Ask SIE to do VCXO test"
+}
+
+CONTROLITEM_DECLARATION
+{
+253	"delay_100ms(x)"	// delay_100ms(20) => delay 2 seconds
+254	"wait_keyin(key)"	// wait_keyin(KEY_CH_UP|KEY_CH_DOWN) => wait until KEY_CH_UP or KEY_CH_DOWN be pressed
+}

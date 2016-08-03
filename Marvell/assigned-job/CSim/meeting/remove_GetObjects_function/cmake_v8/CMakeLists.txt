@@ -1,0 +1,68 @@
+cmake_minimum_required (VERSION 2.6)
+project (CSIM)
+
+option(BUILD_SHARED_LIB "Method of building shared library" "CURRENT")
+option(BUILD_EXE "Method of building shared library" "CURRENT")
+
+set (CSIM_NEEDED_LIBS aa64execution aa64inst aa64interprocessing aa64memory aa64system_register aa64utility execution memory coprocessor inst utility mpcore net_console debugarch gdb_stub interface_v8 model softfloat softfloat64 tarmacparser aa32execution aa32memory aa32coprocessor aa32instruction sharedfunc)
+
+include (${CMAKE_CURRENT_BINARY_DIR}/environment.cmake NO_POLICY_SCOPE)
+include (${CMAKE_CURRENT_BINARY_DIR}/core.cmake NO_POLICY_SCOPE)
+
+add_dependencies (utility CSIM_ZLIB)
+
+if (${BUILD_SHARED_LIB} STREQUAL "CURRENT")
+  file (GLOB_RECURSE AARCH64_INST_OBJECTS ${PROJECT_SOURCE_DIR}/src/v8/aarch64/instruction/*.cpp)
+  GetObjects(INTERFACE_V8_OBJECTS ${PROJECT_SOURCE_DIR}/package/interface_v8 obj/interface_v8/CMakeFiles/interface_v8.dir)
+  GetObjects(AARCH64_INST_OBJECTS ${PROJECT_SOURCE_DIR}/src/v8/aarch64/instruction obj/v8/aarch64/inst/CMakeFiles/aa64inst.dir)
+
+  add_custom_command (
+      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/../libcsim.so
+      COMMAND ${CMAKE_CXX_COMPILER} -shared -lz -export-dynamic -Wl,-noinhibit-exec -fPIC -o ${CMAKE_CURRENT_BINARY_DIR}/../libcsim.so -Wl,--start-group ${INTERFACE_V8_OBJECTS} ${AARCH64_INST_OBJECTS} ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/*.a -Wl,--end-group
+      )
+  add_custom_target (csim DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/../libcsim.so)
+  add_dependencies (csim ${CSIM_NEEDED_LIBS})
+elseif (${BUILD_SHARED_LIB} STREQUAL "SH_COMMAND")
+  # When string is "`...`" and appears in COMMAND, ";" is equal to " ", "\;" is ";", and "\\n" is "\n", ..., etc
+  # So, the the following variables are:
+  # `find obj/interface_v8/CMakeFiles/interface_v8.dir/ -name *.o|sed ':a;N;$!ba;s/\n/;/g'` and
+  # `find obj/v8/aarch64/inst/CMakeFiles/aa64inst.dir/ -name *.o|sed ':a;N;$!ba;s/\n/;/g'`
+  # ref. cmakefiles\Csim.dir\build.make
+  # related ref. http://www.vtk.org/Wiki/CMake_FAQ#Why_do_I_have_unwanted_semicolons_.3B_in_my_compiler_flags.3F
+  set (FIND_INTERFACE_V8_OBJECTS "`find;obj/interface_v8/CMakeFiles/interface_v8.dir/;-name;*.o|sed;':a\;N\;$!ba\;s/\\n/\;/g'`")
+  set (FIND_INST_OBJECTS "`find;obj/v8/aarch64/inst/CMakeFiles/aa64inst.dir/;-name;*.o|sed;':a\;N\;$!ba\;s/\\n/\;/g'`")
+
+  add_custom_command (
+      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/../libcsim.so
+      COMMAND ${CMAKE_CXX_COMPILER} -shared -lz -export-dynamic -Wl,-noinhibit-exec -fPIC -o ${CMAKE_CURRENT_BINARY_DIR}/../libcsim.so -Wl,--start-group ${FIND_INTERFACE_V8_OBJECTS} ${FIND_INST_OBJECTS} ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/*.a -Wl,--end-group
+      )
+  add_custom_target (csim DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/../libcsim.so)
+  add_dependencies (csim ${CSIM_NEEDED_LIBS})
+elseif (${BUILD_SHARED_LIB} STREQUAL "ADD_LIBRARY")
+  file (GLOB_RECURSE INTERFACE_V8_CPP ${PROJECT_SOURCE_DIR}/package/interface_v8/*.cpp)
+  file (GLOB_RECURSE AARCH64_INST_CPP ${PROJECT_SOURCE_DIR}/src/v8/aarch64/instruction/*.cpp)
+
+  set (CMAKE_CXX_FLAGS "")
+
+  set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/..)
+  if (${BUILD_EXE} STREQUAL "OBJECT")
+    # Object libraries were introduced in CMake 2.8.8.
+    # Currently, sun grid server's CMake is 2.6.x, so waiting its support 
+    # ref. http://lists.llvm.org/pipermail/llvm-dev/2015-February/082722.html
+    add_library(AARCH64_INST_OBJECTS OBJECT ${AARCH64_INST_CPP})
+    add_library (csim SHARED ${INTERFACE_V8_CPP} $<TARGET_OBJECTS:AARCH64_INST_OBJECTS>)
+    target_link_libraries (csim -shared -lz -export-dynamic -Wl,-noinhibit-exec -fPIC -Wl,--start-group ${CSIM_NEEDED_LIBS} z -Wl,--end-group)
+  else (${BUILD_EXE} STREQUAL "CPP")
+    add_library (csim SHARED ${INTERFACE_V8_CPP} ${AARCH64_INST_CPP})
+    target_link_libraries (csim -shared -lz -export-dynamic -Wl,-noinhibit-exec -fPIC -Wl,--start-group ${CSIM_NEEDED_LIBS} z -Wl,--end-group)
+  endif (${BUILD_EXE} STREQUAL "OBJECT")
+  add_dependencies (csim ${CSIM_NEEDED_LIBS})
+
+  set (CMAKE_CXX_FLAGS "${USERDEF} ${DEF} -fPIC -O2 ${WARNFLAGS}")
+  set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../lib)
+else (${BUILD_SHARED_LIB} STREQUAL "CURRENT")
+  message("BUILD_SHARED_LIB's option is wrong!!!")
+endif (${BUILD_SHARED_LIB} STREQUAL "CURRENT")
+
+include (${CMAKE_CURRENT_BINARY_DIR}/executable_build.cmake NO_POLICY_SCOPE)
+

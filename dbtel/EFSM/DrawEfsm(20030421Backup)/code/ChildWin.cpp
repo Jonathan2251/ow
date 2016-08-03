@@ -1,0 +1,60 @@
+//---------------------------------------------------------------------
+#include <vcl.h>
+#pragma hdrstop
+
+#include "ChildWin.h"
+#include "main.h"
+//--------------------------------------------------------------------- 
+#pragma resource "*.dfm"
+//---------------------------------------------------------------------
+
+extern TMainForm *MainForm; 
+extern TMDIChild *currDoc;
+
+__fastcall TMDIChild::TMDIChild(TComponent *Owner)
+	: TForm(Owner)
+{
+    Width = MainForm->Width - 30;  
+    Height = 750;
+    ppc = new TPageControl(this);
+    ppc->Parent = this;
+    ppc->Width = Width;
+    ppc->Height = 710;
+    for (int i = 0; i < 2; i++) {
+        pts[i] = new TTabSheet(ppc);
+        pts[i]->PageControl = ppc;
+        pts[i]->Width = ppc->Width;
+        pts[i]->ClientHeight = 705;
+        pts[i]->Caption = "p " + IntToStr(i + 1);
+
+        page[i] = new TGPage(pts[i]);
+        page[i]->Parent = pts[i];
+    }
+}
+//---------------------------------------------------------------------------
+
+void __fastcall TMDIChild::FormClose(TObject *Sender, TCloseAction &Action)
+{
+	Action = caFree;
+}
+//---------------------------------------------------------------------
+
+int TMDIChild::PageCount() {
+    return ppc->PageCount;
+};
+
+int TMDIChild::ActivePageIndex() {
+    return ppc->ActivePageIndex;
+};
+
+
+void __fastcall TMDIChild::FormPaint(TObject *Sender)
+{
+static int k;
+k++;
+    MainForm->StatusBar->SimpleText = MainForm->StatusBar->SimpleText + IntToStr(k);
+    currDoc->page[ActivePageIndex()]->Draw();
+}
+//---------------------------------------------------------------------------
+
+

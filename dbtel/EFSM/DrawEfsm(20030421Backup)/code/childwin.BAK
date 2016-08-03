@@ -1,0 +1,45 @@
+//---------------------------------------------------------------------
+#include <vcl.h>
+#pragma hdrstop
+
+#include "ChildWin.h"
+//--------------------------------------------------------------------- 
+#pragma resource "*.dfm"
+//--------------------------------------------------------------------- 
+__fastcall TMDIChild::TMDIChild(TComponent *Owner)
+	: TForm(Owner)
+{
+    ppc = new TPageControl(Child);
+	ppc->Parent = Child;
+    ppc->Width = Child->Width;
+    ppc->Height = 810;
+	for (int i = 0; i < 2; i++) {
+		pts[i] = new TTabSheet(ppc);
+		pts[i]->PageControl = ppc;
+        pts[i]->ClientHeight = 805;
+        pts[i]->Caption = "p " + IntToStr(i + 1);
+
+        form[i] = new TForm(pts[i]);
+        form[i]->Visible = true;
+        form[i]->Color = clWhite;
+        form[i]->BorderStyle = bsNone;
+        form[i]->Left = 200;
+        form[i]->Top = 0;
+        form[i]->Width = 200;
+        form[i]->Height = 800;
+        form[i]->Parent = pts[i];
+        form[i]->Canvas->Pen->Mode = pmNotXor;
+//        form[i]->Canvas->CopyMode = cmMergePaint;
+        form[i]->OnMouseDown = ImageMouseDown;
+        form[i]->OnMouseMove = ImageMouseMove;
+        form[i]->OnMouseUp = ImageMouseUp;
+    }
+    label = new TLabel(form[0]);
+    label->Parent = form[0];
+}
+//--------------------------------------------------------------------- 
+void __fastcall TMDIChild::FormClose(TObject *Sender, TCloseAction &Action)
+{
+	Action = caFree;
+}
+//--------------------------------------------------------------------- 

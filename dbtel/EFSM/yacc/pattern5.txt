@@ -1,0 +1,8 @@
+		} // end of switch
+		if (changeState) {
+			it1.SetCurrent(curr);
+			it1.direct = UP;
+		}
+		it1.Next();
+	}
+}

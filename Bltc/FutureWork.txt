@@ -1,0 +1,13 @@
+Future Work:
+
+1. Since in bcm7400, I cannot find the disable RS232 transmit register like bcm7038, I Rewrite 2 RS232 output functions to disable print message during boot, but still will print a 'B' character on RS232. It OK to communication with SIE (without leading character @ is fine). Print 'B' is came from UserBspCppInit() of BspUser.c.
+
+2.
+int bltc_main()
+{
+	lib.led.Init();	// I don't know why ? Need this or lib.led._hLed will be null
+	ui = UserInterfaceSelect();
+	ui->Run();
+	
+	return 0;
+}
